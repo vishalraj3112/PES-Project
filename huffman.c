@@ -56,7 +56,7 @@ static void decode_file(struct MinHeapNode* root, uint8_t *s, uint8_t *decode);
 static int encode_string(char *message, uint8_t *buffer, size_t nbytes);
 static void gen_huffman_header(void);
 static void print_lut(void);
-static void decode_string(uint8_t encoded_buffer[], uint8_t encoded_bits, uint8_t decoded_buffer[]);
+static void decode_string(uint8_t encoded_buffer[], uint16_t encoded_bits, uint8_t decoded_buffer[]);
 static void store_data(char data, int arr[],int no_bits);
 
 char encoded_string[100] = {0};
@@ -273,20 +273,13 @@ struct MinHeapNode* buildHuffmanTree(char data[],
   
 // Prints huffman codes from the root of Huffman Tree.
 // It uses arr[] to store codes
-int cc_arr[10][MAX_TREE_HT] = {{0},{0}};
-
 void printCodes(struct MinHeapNode* root, int arr[],
                 int top)
   
 {
-    static int cc_no = 0, idx = 0;
-
     // Assign 0 to left edge and recur
     if (root->left) {
-  
         arr[top] = 0;
-        cc_arr[cc_no][idx] = 0;
-        idx++;
         printCodes(root->left, arr, top + 1);
     }
   
@@ -294,8 +287,6 @@ void printCodes(struct MinHeapNode* root, int arr[],
     if (root->right) {
   
         arr[top] = 1;
-        cc_arr[cc_no][idx] = 1;
-        idx++;
         printCodes(root->right, arr, top + 1);
     }
   
@@ -305,15 +296,12 @@ void printCodes(struct MinHeapNode* root, int arr[],
     // and its code from arr[]
     if (isLeaf(root)) {
   
-        printf("%c: ", root->data);
-        printArr(arr, top);
+        //printf("%c: ", root->data);
+        //printArr(arr, top);
         huffman_table[root->data].data = root->data;
         huffman_table[root->data].no_bits = top;
         store_data(root->data,arr,top);
-        cc_no++;
     }
-
-
 }
 
 void store_data(char data, int arr[],int no_bits)
@@ -382,7 +370,7 @@ int encode_string(char *message, uint8_t *buffer, size_t nbytes)
     if (bits_written > 0)
         min_idx = 1;
 
-    return buffer_idx + min_idx;
+    return 8*buffer_idx + bits_written;
 }
   
 // The main function that builds a
@@ -407,10 +395,10 @@ struct MinHeapNode* HuffmanCodes(char data[], int freq[], int size)
 
 int main()
 {
-    uint8_t decodedstring[100] = {0};
+    uint8_t decodedstring[200] = {0};
     //uint8_t string[256] = "";
     char * string;
-    uint8_t data_to_encode[] = "oh my god daddy just dont be my baddy";
+    uint8_t data_to_encode[] = "Just gonna stand there and watch me burn? Well, that's alright, because I like the way it hurts Just gonna stand there and hear me cry?";
     long files_bytes = 0;
     int ctr = 0;
     
@@ -474,11 +462,11 @@ int main()
 
     uint8_t buff[1024];
 
-    int indexes = encode_string(data_to_encode, buff, sizeof(buff));//string encoded here
+    uint16_t indexes = encode_string(data_to_encode, buff, sizeof(buff));//string encoded here
 
     //decode here itself
     //decode_file(root, buff, decodedstring);
-    decode_string(buff, encoded_bits, decodedstring);
+    decode_string(buff, indexes, decodedstring);
 
     printf("\n%s\n", decodedstring);
 
@@ -578,12 +566,12 @@ void decode_file(struct MinHeapNode* root, uint8_t *s, uint8_t *decode)
 }
 
 
-void decode_string(uint8_t enc_buff[], uint8_t enc_bits, uint8_t dec_buff[])
+void decode_string(uint8_t enc_buff[], uint16_t enc_bits, uint8_t dec_buff[])
 {
     uint8_t *cc_buf = enc_buff;
-    uint8_t enc_idx = 0, dec_idx = 0;
-    uint8_t ccode = 0x00, ccode_len = 1;
-    uint8_t i = 1, j = 0, curr_pos = 0;//indexes
+    uint16_t enc_idx = 0, dec_idx = 0;
+    uint16_t ccode = 0x00, ccode_len = 1;
+    uint16_t i = 1, j = 0, curr_pos = 0;//indexes
 
     while(enc_bits != 0){
 

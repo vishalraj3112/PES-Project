@@ -57,7 +57,7 @@ static int encode_string(char *message, uint8_t *buffer, size_t nbytes);
 static void gen_huffman_header(void);
 static void print_lut(void);
 static void decode_string(uint8_t encoded_buffer[], uint8_t encoded_bits, uint8_t decoded_buffer[]);
-
+static void store_data(char data, int arr[],int no_bits);
 
 char encoded_string[100] = {0};
 
@@ -309,17 +309,32 @@ void printCodes(struct MinHeapNode* root, int arr[],
         printArr(arr, top);
         huffman_table[root->data].data = root->data;
         huffman_table[root->data].no_bits = top;
-        for (int i = 0; i < top; i++) {
-            if (arr[i] == 1) {
-                huffman_table[root->data].ccode += 1*(arr[i]<<(top-1-i));
-            }       
-        }
-        //huffman_table[cc_no].ccode = arr;//should use strcat;
+        store_data(root->data,arr,top);
         cc_no++;
     }
 
 
 }
+
+void store_data(char data, int arr[],int no_bits)
+{
+    uint32_t temp = 0;
+    for(int i = 0; i < no_bits; i++){
+            if(arr[i] == 1)
+                temp += (1<< (no_bits-1-i));
+                //huffman_table[data].ccode += (1<< (no_bits-1-i));
+    }  
+    //printf("temp:%d ",temp);  
+    huffman_table[data].ccode = temp;
+    // for(int i = 0; i < no_bits; i++){
+    //     if(arr[i] == 1)
+    //         temp += (1<< (i));
+    // }
+    // printf("temp:%d ",temp);  
+    // huffman_table[data].ccode = temp;
+}
+
+
 
 int encode_string(char *message, uint8_t *buffer, size_t nbytes)
 {
@@ -393,9 +408,52 @@ struct MinHeapNode* HuffmanCodes(char data[], int freq[], int size)
 int main()
 {
     uint8_t decodedstring[100] = {0};
-    uint8_t string[] = "oh my god daddy just dont be my baddy";
+    //uint8_t string[256] = "";
+    char * string;
     uint8_t data_to_encode[] = "oh my god daddy just dont be my baddy";
+    long files_bytes = 0;
     int ctr = 0;
+    
+    //***File read
+    char * filename = "input.txt";
+    FILE *fp = fopen(filename,"r");
+
+    if(fp == NULL){
+        printf("Error reading file %s",filename);
+        return 1;
+    }
+
+    /*Get no of bytes in file*/
+    fseek(fp,0L,SEEK_END);
+    files_bytes = ftell(fp);
+
+    /*reset file pointer to start*/
+    fseek(fp,0L,SEEK_SET);
+
+    /* allocate sufficient memory*/
+    string = (char*)calloc(files_bytes,sizeof(char));
+    if(string == NULL){
+        return 1;
+    }
+
+    fread(string,sizeof(char),files_bytes,fp);
+    fclose(fp);
+    printf("File data:");
+    printf("%s\r\n",string);
+
+    /*free allocated memory*/
+    //free(string);
+
+    // const uint32_t MAX_LEN = 256;
+    // char buffer[MAX_LEN];
+
+    // printf("File data:");
+    // while(fgets(string,MAX_LEN,fp));
+    //     printf("%s\r\n",string);
+
+    // fclose(fp);
+    //***File read
+
     int size = getFrequency(string);
     char arr[size];
     int freq[size];
@@ -429,6 +487,7 @@ int main()
     }else
         printf("Fail!");
 
+    free(string);
   
     return 0;
 }
@@ -519,14 +578,14 @@ void decode_file(struct MinHeapNode* root, uint8_t *s, uint8_t *decode)
 }
 
 
-void decode_string(uint8_t encoded_buffer[], uint8_t encoded_bits, uint8_t decoded_buffer[])
+void decode_string(uint8_t enc_buff[], uint8_t enc_bits, uint8_t dec_buff[])
 {
-    uint8_t *cc_buf = encoded_buffer;
+    uint8_t *cc_buf = enc_buff;
     uint8_t enc_idx = 0, dec_idx = 0;
     uint8_t ccode = 0x00, ccode_len = 1;
     uint8_t i = 1, j = 0, curr_pos = 0;//indexes
 
-    while(encoded_bits != 0){
+    while(enc_bits != 0){
 
         ccode |= (cc_buf[enc_idx] & 0x80) >> 7;//read the char codes in reverse
     
@@ -534,7 +593,7 @@ void decode_string(uint8_t encoded_buffer[], uint8_t encoded_bits, uint8_t decod
         while(huffman_table[i].data != '\0'){//till end of LUT is not reached
             if(ccode_len == huffman_table[i].no_bits){//length match
                 if(ccode == huffman_table[i].ccode){//ccode match
-                    decoded_buffer[dec_idx++] = huffman_table[i].data;
+                    dec_buff[dec_idx++] = huffman_table[i].data;
                     ccode = 0;
                     ccode_len = 0;
                     break;
@@ -555,75 +614,9 @@ void decode_string(uint8_t encoded_buffer[], uint8_t encoded_bits, uint8_t decod
             enc_idx++;
         }
 
-        encoded_bits--;
+        enc_bits--;
 
     }
-    decoded_buffer[dec_idx] = '\0';
+    dec_buff[dec_idx] = '\0';
 }
 
-
-// void decode_string(uint8_t encoded_buffer[], uint8_t encoded_bits, uint8_t decoded_buffer[])
-// {
-//     printf("encoded bits = %d\n", encoded_bits);
-//     //huffman_code_t *huffman_code;
-//     //huffman_code= huff_code;
-//     uint8_t *buf = encoded_buffer;
-//     printf("encoded bits = %d\n", encoded_bits);
-//     uint8_t ebuf_id = 0, dbuf_id = 0;
-//     uint8_t code1 = 0, code_length = 1;
-//     uint8_t i = 1, j = 0, bit_pos=0;
-    
-//     printf("buf = %p, encoded_buffer = %p\n", buf, encoded_buffer);
-    
-//     while(encoded_bits != 0)
-//     {
-//         // printf("hell");
-//         // printf("lklj\n");
-//         code1 |= (buf[ebuf_id] & 0x80) >> 7;
-//         // printf("logic = %X\n",buf[ebuf_id]);
-//         // if(buf[ebuf_id] & 0x80)
-//         // {
-//         //  code1 |= 0x01;
-//         // }
-
-//         //stuck 
-//         //printf("hello");
-//         printf("code = %d, code_length = %d\n", code1, code_length);
-
-//         printf("data:%d",huffman_table[i].data);
-//         //replace \0 with end symbol
-//         while(huffman_table[i].data != '\0')
-//         {
-//             printf("Checking with symbol %c\n",huffman_table[i].data );
-//             if(code_length == huffman_table[i].no_bits)
-//             {
-//                 printf("length matched at %d\n", code_length);
-//                 if(code1 == huffman_table[i].ccode)
-//                 {
-//                     printf("matched code = %d\n", code1);
-//                     printf("symbol = %c\n", huffman_table[i].data);
-//                     decoded_buffer[dbuf_id++] = huffman_table[i].data;
-//                     code1 = 0;
-//                     code_length = 0;
-//                     break;
-//                 }
-//             }
-//             i++;
-//         }
-//         i=1;
-//         code_length++;
-//         code1 <<= 1;
-//         buf[ebuf_id] <<= 1;
-//         bit_pos++;
-//         if(bit_pos == 8)
-//         {
-//             bit_pos = 0;
-//             ebuf_id++;
-//         }
-//         encoded_bits--;
-//         printf("\n");
-        
-//     }
-//     decoded_buffer[dbuf_id]= '\0';
-//     printf("%s\n", decoded_buffer);
-// }

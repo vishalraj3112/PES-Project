@@ -1,10 +1,16 @@
 // C program for Huffman Coding
 #include <stdio.h>
 #include <stdlib.h>
-  
+#include <string.h>
+#include <stdint.h>
+#include <math.h>  
+
 // This constant can be avoided by explicitly
 // calculating height of Huffman Tree
 #define MAX_TREE_HT 100
+#define MAX_CHAR    128
+
+int encoded_bits = 0;
   
 // A Huffman tree node
 struct MinHeapNode {
@@ -33,8 +39,23 @@ struct MinHeap {
     struct MinHeapNode** array;
 };
 
+typedef struct{
+    uint8_t data;       //Data being coded
+    uint32_t ccode;     //Character code for data
+    int32_t no_bits;    //Number of bits in char code
+    int32_t freq;       //frequency of data
+}huffman_table_t;
+
+huffman_table_t huffman_table[MAX_CHAR] = {{.data = 'x', .ccode = 0, .no_bits = 0}};
+
 static void printFreq(int freq[],char arr[], int freq_new[]);
-static void getFrequency(char string[]);
+static int getFrequency(char string[]);
+static void decode_file(struct MinHeapNode* root, uint8_t *s, char *decode);
+static int encode_string(char *message, uint8_t *buffer, size_t nbytes);
+
+char encoded_string[100] = {0};
+
+
   
 // A utility function allocate a new
 // min heap node with given character
@@ -246,15 +267,20 @@ struct MinHeapNode* buildHuffmanTree(char data[],
   
 // Prints huffman codes from the root of Huffman Tree.
 // It uses arr[] to store codes
+int cc_arr[10][MAX_TREE_HT] = {{0},{0}};
+
 void printCodes(struct MinHeapNode* root, int arr[],
                 int top)
   
 {
-  
+    static int cc_no = 0, idx = 0;
+
     // Assign 0 to left edge and recur
     if (root->left) {
   
         arr[top] = 0;
+        cc_arr[cc_no][idx] = 0;
+        idx++;
         printCodes(root->left, arr, top + 1);
     }
   
@@ -262,6 +288,8 @@ void printCodes(struct MinHeapNode* root, int arr[],
     if (root->right) {
   
         arr[top] = 1;
+        cc_arr[cc_no][idx] = 1;
+        idx++;
         printCodes(root->right, arr, top + 1);
     }
   
@@ -273,15 +301,77 @@ void printCodes(struct MinHeapNode* root, int arr[],
   
         printf("%c: ", root->data);
         printArr(arr, top);
+        huffman_table[root->data].data = root->data;
+        huffman_table[root->data].no_bits = top;
+        for (int i = 0; i < top; i++) {
+            if (arr[i] == 1) {
+                huffman_table[root->data].ccode += 1*(arr[i]<<(top-1-i));
+            }       
+        }
+        //huffman_table[cc_no].ccode = arr;//should use strcat;
+        cc_no++;
     }
+
+
+}
+
+int encode_string(char *message, uint8_t *buffer, size_t nbytes)
+{
+    if(*message == '\0') {
+        printf("Error: Empty Message");
+        return 0;
+    }
+
+    int extra_idx = 0;
+    int i;
+    int bits_written = 0;
+    int buffer_idx = 0;
+
+    memset(buffer, 0, nbytes);
+
+    //while(*message != '\0') {
+    for (char *p = message; *p != '\0'; p++) {
+        for (i = 0; huffman_table[i].data != *p; i++);
+
+        uint32_t code = huffman_table[i].ccode;
+        int code_bits = huffman_table[i].no_bits;
+
+        while(code_bits > 0) {
+            int this_write = fmin(8 - bits_written, code_bits);
+
+            int readshift = code_bits - this_write;
+            uint32_t temp = (code >> readshift) & ((1UL << this_write) -1);
+
+            int write_shift = 8 - bits_written - this_write;
+            buffer[buffer_idx] |= temp << write_shift;
+
+            bits_written += this_write;
+            code_bits -= this_write;
+            
+            if (bits_written == 8) {
+                bits_written = 0;
+                buffer_idx++;
+            }
+        }
+    }
+
+    encoded_bits = (buffer_idx<<3) + bits_written;
+    if (bits_written > 0)
+        extra_idx = 1;
+
+    return buffer_idx + extra_idx;
 }
   
 // The main function that builds a
 // Huffman Tree and print codes by traversing
 // the built Huffman Tree
-void HuffmanCodes(char data[], int freq[], int size)
+struct MinHeapNode* HuffmanCodes(char data[], int freq[], int size)
   
 {
+    char string[] = "tryingtoenteraveryyyyyyyyyyyyylongggggggggggstringgggggggggggggg";
+    uint8_t decodedstring[100] = {0};
+
+
     // Construct Huffman Tree
     struct MinHeapNode* root
         = buildHuffmanTree(data, freq, size);
@@ -291,11 +381,34 @@ void HuffmanCodes(char data[], int freq[], int size)
     int arr[MAX_TREE_HT], top = 0;
   
     printCodes(root, arr, top);
+
+    // printf("Ccodes:\r\n");
+    // for(int i = 0;i < size; i++){
+        
+    //     printf("%s",(char *) cc_arr[i]);
+    // }
+
+   
+   uint8_t buff[1024];
+
+   int indexes = encode_string(string, buff, sizeof(buff));//string encoded here
+
+   //decode here itself
+   decode_file(root, buff, decodedstring);
+
+   printf("\n%s\n", decodedstring);
+
+   if(!strncmp(string,decodedstring,strlen(string))){
+        printf("Encode = decode\r\n");
+   }
+
+    return root;
 }
   
 // Driver code
-char arr[26] = {0};//for a - z
-int freq[26] = {0};//for a - z
+// char arr[26] = {0};//for a - z //make struct of this thing
+// int freq[26] = {0};//for a - z //make struct of this thing
+int size = 0;
 
 int main()
 {
@@ -303,44 +416,63 @@ int main()
     // char arr[] = { 'a', 'b', 'c', 'd', 'e', 'f' };
     // int freq[] = { 5, 9, 12, 13, 16, 45 };
 
-    char string[] = "geeksforgeeks";
+    char string[] = "tryingtoenteraveryyyyyyyyyyyyylongggggggggggstringgggggggggggggg";
 
+    int ctr = 0;
 
-    getFrequency(string);
+    int size = getFrequency(string);
+
+    char arr[size];
+    int freq[size];
+
+    for (int i = 0; i < 128; i++) {
+        if (huffman_table[i].freq > 0) {
+            arr[ctr] = huffman_table[i].data;
+            freq[ctr++] = huffman_table[i].freq;
+        }
+    }
   
     //int size = sizeof(arr) / sizeof(arr[0]);
-    int size = 7;
-  
-    HuffmanCodes(arr, freq, size);
+    //int size = 7;
+    struct MinHeapNode* root;
+
+    root = HuffmanCodes(arr, freq, size);
+
+    //decode_string(root,encoded_string);
   
     return 0;
 }
 
 //Code for finding frequency of characters in c:
 
-void getFrequency(char string[])
+int getFrequency(char string[])
 {
-    int freq_new[26] = {0};//Only meant for a-z
     int i = 0;
+    int cnt = 0;
 
     while(string[i] != '\0'){
-        freq_new[string[i] - 'a']++;
-        i++;
+        huffman_table[string[i++]].freq++;
     }
 
-    printFreq(freq,arr,freq_new);
+    for (int i = 0; i < 128; i++) {
+        huffman_table[i].data = i;
+        if (huffman_table[i].freq > 0)
+            cnt++;
+    }
 
+    return cnt;
 }
 
 void printFreq(int freq[],char arr[], int freq_new[])
 {
     int itr = 0;
-    for(int i = 0;i < 26 ; i++){
+    for(int i = 0;i < 128 ; i++){
 
         if(freq_new[i] != 0){
             arr[itr] = i + 'a';
             freq[itr] = freq_new[i];
             itr++;
+            size = itr;
             printf("%c -> %d\r\n",i+'a',freq_new[i]);//
         }
     }
@@ -350,4 +482,42 @@ void printFreq(int freq[],char arr[], int freq_new[])
         printf("pos:%d val:%c freq:%d\r\n",i,arr[i],freq[i]);
     }
 
+}
+
+
+
+void decode_file(struct MinHeapNode* root, uint8_t *s, char *decode)
+{
+    int j = 0;
+    int decoded_bits = 0;
+    struct MinHeapNode* curr = root;
+
+    // int temp = (encoded_bits & 7);
+    // printf("Encoded_bits %d\n", (encoded_bits >> 3 + 1));
+    for (int i = 0; i < (encoded_bits >> 3) + 1; i++)
+    {
+        int bit = 8;
+        while(bit){
+            if ((s[i] & 0x80) == 0)
+            //if (s[i] == '0')
+                curr = curr->left;
+            else
+                curr = curr->right;
+            s[i] <<= 1;
+            bit--;
+            
+            // reached leaf node
+            if (curr->left==NULL && curr->right==NULL)
+            {
+                decode[j++] = curr->data;
+                //printf("%c", curr->data);
+                curr = root;
+            }
+
+            decoded_bits++;
+            if (decoded_bits == encoded_bits)
+                break;
+        }
+    }
+    decode[j]='\0';
 }

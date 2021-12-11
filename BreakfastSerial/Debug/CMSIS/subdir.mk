@@ -4,15 +4,12 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../CMSIS/huffman.c \
 ../CMSIS/system_MKL25Z4.c 
 
 OBJS += \
-./CMSIS/huffman.o \
 ./CMSIS/system_MKL25Z4.o 
 
 C_DEPS += \
-./CMSIS/huffman.d \
 ./CMSIS/system_MKL25Z4.d 
 
 

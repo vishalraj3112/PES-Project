@@ -7,6 +7,7 @@ C_SRCS += \
 ../source/cbfifo.c \
 ../source/command_process.c \
 ../source/hexdump.c \
+../source/huffman.c \
 ../source/main.c \
 ../source/mtb.c \
 ../source/semihost_hardfault.c \
@@ -18,6 +19,7 @@ OBJS += \
 ./source/cbfifo.o \
 ./source/command_process.o \
 ./source/hexdump.o \
+./source/huffman.o \
 ./source/main.o \
 ./source/mtb.o \
 ./source/semihost_hardfault.o \
@@ -29,6 +31,7 @@ C_DEPS += \
 ./source/cbfifo.d \
 ./source/command_process.d \
 ./source/hexdump.d \
+./source/huffman.d \
 ./source/main.d \
 ./source/mtb.d \
 ./source/semihost_hardfault.d \

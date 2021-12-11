@@ -1,0 +1,5 @@
+cbfifo.c:33:17:datacpy	32	static
+cbfifo.c:57:8:cbfifo_enqueue	32	static
+cbfifo.c:106:8:cbfifo_dequeue	32	static
+cbfifo.c:149:8:cbfifo_length	32	static
+cbfifo.c:169:8:cbfifo_capacity	16	static

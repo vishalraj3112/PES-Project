@@ -1,0 +1,8 @@
+command_process.c:52:10:accumulator	32	static
+command_process.c:80:6:process_cmd	88	static
+command_process.c:147:6:author_handler	16	static
+command_process.c:159:6:dump_handler	40	static
+command_process.c:195:6:valid_arg	24	static
+command_process.c:213:6:help_handler	16	static
+command_process.c:230:6:info_handler	16	static
+command_process.c:238:6:huffman_handler	16	static

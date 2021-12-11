@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <math.h>  
-//#include "huffman.h"
+//#include <math.h>  
+#include "huffman.h"
 
 // This constant can be avoided by explicitly
 // calculating height of Huffman Tree
@@ -41,14 +41,14 @@ struct MinHeap {
     struct MinHeapNode** array;
 };
 
-typedef struct{
-    uint8_t data;       //Data being coded
-    uint32_t ccode;     //Character code for data
-    int32_t no_bits;    //Number of bits in char code
-    int32_t freq;       //frequency of data
-}huffman_table_t;
+// typedef struct{
+//     uint8_t data;       //Data being coded
+//     uint32_t ccode;     //Character code for data
+//     int32_t no_bits;    //Number of bits in char code
+//     int32_t freq;       //frequency of data
+// }huffman_table_t;
 
-huffman_table_t huffman_table[MAX_CHAR] = {{.data = 'x', .ccode = 0, .no_bits = 0}};
+// huffman_table_t huffman_table[MAX_CHAR] = {{.data = 'x', .ccode = 0, .no_bits = 0}};
 
 static void printFreq(int freq[],char arr[], int freq_new[]);
 static int getFrequency(uint8_t string[]);
@@ -58,6 +58,7 @@ static void gen_huffman_header(void);
 static void print_lut(void);
 static void decode_string(uint8_t encoded_buffer[], uint16_t encoded_bits, uint8_t decoded_buffer[]);
 static void store_data(char data, int arr[],int no_bits);
+static int min(int a,int b);
 
 char encoded_string[100] = {0};
 
@@ -348,7 +349,7 @@ int encode_string(char *message, uint8_t *buffer, size_t nbytes)
 
 
         while(no_bits > 0) {
-            int this_write = fmin(8 - bits_written, no_bits);
+            int this_write = min(8 - bits_written, no_bits);
 
             int readshift = no_bits - this_write;
             uint32_t temp = (code >> readshift) & MASK(this_write)/*((1UL << this_write) -1)*/;
@@ -456,7 +457,7 @@ int main()
     struct MinHeapNode* root;
 
     root = HuffmanCodes(arr, freq, size);//generating huffman tree here
-
+    //----tree generation over here
     print_lut();
     //gen_huffman_header();
 
@@ -608,3 +609,7 @@ void decode_string(uint8_t enc_buff[], uint16_t enc_bits, uint8_t dec_buff[])
     dec_buff[dec_idx] = '\0';
 }
 
+int min(int a,int b)
+{
+    return (a <= b) ? a : b;
+}

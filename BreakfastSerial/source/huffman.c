@@ -21,13 +21,21 @@ void huffman(void)
 {
 	uint8_t decodedstring[200] = {0};
 
-	char data_to_encode[] = "Just gonna stand there and watch me burn? Well, that's alright, because I like the way it hurts Just gonna stand there and hear me cry?";
+	//char data_to_encode[] = "Just gonna stand there and watch me burn? Well, that's alright, because I like the way it hurts Just gonna stand there and hear me cry?";
+	char data_to_encode[] = "entering a random string";
 
 	uint8_t buff[1024];
 
 	//encoding
 	uint16_t indexes = encode_string(data_to_encode, buff, sizeof(buff));//string encoded here
-	printf("Encoded string:%s\r\n",buff);
+
+	//print the encoded buffer
+	for(int i = 0; i < 14; i++){//105 = 13.125 bits
+		//printf("buff[%d]:%x\r\n",i,buff[i]);
+		printf("%x",buff[i]);
+	}
+	printf("\r\n");
+	printf("encoded bits:%d\r\n",indexes);
 
 	//decoding
 	decode_string(buff, indexes, decodedstring);
@@ -99,7 +107,7 @@ int min(int a,int b)
 
 void decode_string(uint8_t enc_buff[], uint16_t enc_bits, uint8_t dec_buff[])
 {
-    uint8_t *cc_buf = enc_buff;
+    uint8_t *cc_buf = enc_buff;//problem of this is that the input buffer would be lost
     uint16_t enc_idx = 0, dec_idx = 0;
     uint16_t ccode = 0x00, ccode_len = 1;
     uint16_t i = 1, curr_pos = 0;//indexes

@@ -17,6 +17,7 @@
 #include "test_cbfifo.h"
 #include "command_process.h"
 #include "Log.h"
+#include "huff.h"
 
 // ***********************************************************************************************
 // * Name :            	main
@@ -34,6 +35,10 @@ int main(void)
 	#ifdef DEBUG
 	test_cbfifo();//Test cbfifo once
 	#endif
+
+	//printf("Test string\r\n");
+
+	huffman();
 
 	printf("Welcome to BreakfastSerial!\r\n");
 	printf("? ");

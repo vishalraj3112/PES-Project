@@ -6,7 +6,8 @@ source/main.o source/main.d: ../source/main.c ../source/sysclock.h \
  D:\PES\Project\Code\BreakfastSerial\CMSIS/cmsis_gcc.h \
  D:\PES\Project\Code\BreakfastSerial\CMSIS/core_cmFunc.h \
  D:\PES\Project\Code\BreakfastSerial\CMSIS/system_MKL25Z4.h \
- ../source/test_cbfifo.h ../source/command_process.h ../source/Log.h
+ ../source/test_cbfifo.h ../source/command_process.h ../source/Log.h \
+ ../source/huff.h
 
 ../source/sysclock.h:
 
@@ -31,3 +32,5 @@ D:\PES\Project\Code\BreakfastSerial\CMSIS/system_MKL25Z4.h:
 ../source/command_process.h:
 
 ../source/Log.h:
+
+../source/huff.h:

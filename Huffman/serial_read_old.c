@@ -54,93 +54,75 @@ int main()
         goto exit;
     }
 
-    //Read port
-    //Setting Receive Mask
-    // status = SetCommMask(hComm, EV_RXCHAR);
-    // if (status == FALSE)
-    // {
-    //     printf("\nError to in Setting CommMask\n\n");
-    //     goto exit;
-    // }
-    //Setting WaitComm() Event
-    // status = WaitCommEvent(hComm, &dwEventMask, NULL); //Wait for the character to be received
-    // if (status == FALSE)
-    // {
-    //     printf("\nError! in Setting WaitCommEvent()\n\n");
-    //     goto exit;
-    // }
 
-    //Read data and store in a buffer
-    status = ReadFile(hComm, &ReadData, sizeof(ReadData), &bytesRead, NULL);
-    while(bytesRead > 0){
-        buffer[i++] = ReadData;
+   while(1){
+   
+        //Read data and store in a buffer
+
         status = ReadFile(hComm, &ReadData, sizeof(ReadData), &bytesRead, NULL);
-    }
-
-    int j =0;
-    // for(j = 0; j < i; j++){
-    //     printf("buff[%d]: %c\n",j,buffer[j]);
-    // }
-
-    // do
-    // {
-    //     status = ReadFile(hComm, &ReadData, sizeof(ReadData), &bytesRead, NULL);
-    //     buffer[i++] = ReadData;
-    // }
-    // while (bytesRead > 0);
-    // --i; //Get Actual length of received data
-    //printf("\nNumber of bytes received = %d\n\n", loop);
-    //print receive data on console
-    //printf("\n\n");
-    // int j = 0;
-    // for (j = 0; j < i; ++j)
-    // {
-    //     printf("buff[%d]: %c\n",j,buffer[j]);
-    // }
-    // printf("\n\n");
-    uint8_t temp[3] = {0}, num = 0, buff_2[20] = {0};
-    uint16_t idx = 0;
-
-    // for(i = 0 ; i < 14 ; i ++){
-    //     num = buffer[i];
-    //     buff_2[i] = num;
-    //     printf("buf[%d]:%x\r\n",i,num);
-    // }
-    i = 0;
-    while(buffer[i] != '\0'){
-        num = buffer[i];
-        buff_2[i] = num;
-        printf("buf[%d]:%x\r\n",i,num);
-        if(num == 0xff){
-            printf("Token!\r\n");
-            break;
+        while(bytesRead > 0){
+            buffer[i++] = ReadData;
+            status = ReadFile(hComm, &ReadData, sizeof(ReadData), &bytesRead, NULL);
         }
-        i++;
-    }
 
-    //idx = buffer[14];//logic required for this to be made
-    if((i > 0) && (i <= 256)){//255 data bytes + 1 size byte
-        idx = buff_2[i-1];
-    }
-    i = 0;//reset for next cycle
+        int j =0;
+        // for(j = 0; j < i; j++){
+        //     printf("buff[%d]: %c\n",j,buffer[j]);
+        // }
 
-    printf("size bits:%d\r\n",idx);
+        // do
+        // {
+        //     status = ReadFile(hComm, &ReadData, sizeof(ReadData), &bytesRead, NULL);
+        //     buffer[i++] = ReadData;
+        // }
+        // while (bytesRead > 0);
+        // --i; //Get Actual length of received data
 
-    printf("\n");
-    // printf("Converted buffer:\n");
-    // for(i = 0; i < sizeof(buff_2); i++)
-    // {
-    //     printf("%x",buff_2[i]);
-    // }
-    
-    uint8_t decodedstring[200] = {0};
+        uint8_t temp[3] = {0}, num = 0, buff_2[20] = {0};
+        uint16_t idx = 0;
 
-    //decoding
-	decode_string(buff_2, idx, decodedstring);
+        i = 0;
+        while(buffer[i] != '\0'){
+            num = buffer[i];
+            buff_2[i] = num;
+            printf("buf[%d]:%x\r\n",i,num);
+            if(num == 0xff){
+                printf("Token!\r\n");
+                break;
+            }
+            i++;
+        }
 
-	printf("\n%s\r\n", decodedstring);
+        //idx = buffer[14];//logic required for this to be made
+        if((i > 0) && (i <= 256)){//255 data bytes + 1 size byte
+            idx = buff_2[i-1];
+        }
+        i = 0;//reset for next cycle
 
-    verify_encoded_data(decodedstring);
+        if(idx){ //if there is some size in input string
+            printf("size bits:%d\r\n",idx);
+            printf("\n");
+
+
+            uint8_t decodedstring[200] = {0};
+
+            //decoding
+        	decode_string(buff_2, idx, decodedstring);
+
+        	printf("\n%s\r\n", decodedstring);
+
+            verify_encoded_data(decodedstring);
+
+            //clear all buffers
+            bytesRead = 0;
+            ReadData = 0;
+            idx = 0;
+            memset(buffer,0,sizeof(buffer));
+            memset(buff_2,0,sizeof(buff_2));
+            memset(decodedstring,0,sizeof(decodedstring));
+        }   
+
+    }//while(1)
 
 exit:
     CloseHandle(hComm);//Closing the Serial Port

@@ -57,9 +57,16 @@ void huffman(void)
 
 void test_syswrite_encoding(void)
 {
-	char data_to_encode[] = "entering a random strin";
+	char data_to_encode1[] = "entering a random strin";
+	char data_to_encode2[] = "entering a random strin";
+	char data_to_encode3[] = "entering a random strin";
+	char data_to_encode4[] = "entering a random strin";
 
-	printf("%s",data_to_encode);//syswrite test
+	printf("%s",data_to_encode1);//syswrite test
+	printf("%s",data_to_encode2);//syswrite test
+	printf("%s",data_to_encode3);//syswrite test
+	printf("%s",data_to_encode4);//syswrite test
+
 }
 
 int encode_string(char *message, uint8_t *buffer, size_t nbytes)

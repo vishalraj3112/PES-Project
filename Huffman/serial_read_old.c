@@ -7,13 +7,13 @@
 
 static uint8_t string_to_hex(char array[]);
 static void decode_string(uint8_t enc_buff[], uint16_t enc_bits, uint8_t dec_buff[]);
-static void verify_encoded_data(uint8_t decoded_string[]);
+static void test_decoded_data(uint8_t decoded_string[]);
 
 int main()
 {
     HANDLE hComm;
     DCB dcbParams = { 0 };
-    char buffer[64] = {0};
+    char buffer[200] = {0};
     DWORD bytesRead;
     DWORD dwEventMask;//change name
     int loop = 0, i =0;
@@ -78,40 +78,84 @@ int main()
         // while (bytesRead > 0);
         // --i; //Get Actual length of received data
 
-        uint8_t temp[3] = {0}, num = 0, buff_2[20] = {0};
+        uint8_t temp[3] = {0}, num = 0, buff_2[200] = {0}, enc_buff[100] = {0};
         uint16_t idx = 0;
+        int length = 0, prev_i = 0;
+        uint8_t decodedstring[200] = {0};
 
         i = 0;
+
         while(buffer[i] != '\0'){
+
             num = buffer[i];
             buff_2[i] = num;
             printf("buf[%d]:%x\r\n",i,num);
+
             if(num == 0xff){
+
                 printf("Token!\r\n");
-                break;
+
+                //extract_enc_string(buff_2,i);
+                length = i - prev_i;
+
+                if((length > 0) && (length <= 256)){//255 data bytes + 1 size byte
+                    idx = buff_2[i-1];
+                }
+
+                prev_i = i;
+
+                if(idx){ //if there is some size in input string
+                    printf("size bits:%d\r\n",idx);
+
+                    //decoding
+                    uint16_t start = 0;
+                    if(i-length)
+                        start = i - length + 1;
+                    else
+                        start = i - length;
+
+                    printf("start:%d ",start);
+
+                    uint16_t upto = length - 1;
+                    printf("upto:%d \n",upto);
+
+                    memcpy(enc_buff, (buff_2 + start), upto);
+                    for(int k=0;k<length;k++)
+                        printf("enc_buff[%d]:%x ",k,enc_buff[k]);
+
+                    decode_string(enc_buff, idx, decodedstring);
+
+                    printf("%s\r\n", decodedstring);
+
+                    test_decoded_data(decodedstring);
+
+                }                   
+
+                //break;
             }
+
             i++;
         }
 
         //idx = buffer[14];//logic required for this to be made
-        if((i > 0) && (i <= 256)){//255 data bytes + 1 size byte
-            idx = buff_2[i-1];
-        }
-        i = 0;//reset for next cycle
+        // if((i > 0) && (i <= 256)){//255 data bytes + 1 size byte
+        //     idx = buff_2[i-1];
+        // }
+        // i = 0;//reset for next cycle
 
         if(idx){ //if there is some size in input string
-            printf("size bits:%d\r\n",idx);
-            printf("\n");
+        //     printf("size bits:%d\r\n",idx);
+        //     printf("\n");
 
 
-            uint8_t decodedstring[200] = {0};
+        //     uint8_t decodedstring[200] = {0};
 
-            //decoding
-        	decode_string(buff_2, idx, decodedstring);
+        //     //decoding
+        // 	decode_string(buff_2, idx, decodedstring);
 
-        	printf("\n%s\r\n", decodedstring);
+        // 	printf("\n%s\r\n", decodedstring);
 
-            verify_encoded_data(decodedstring);
+        //     test_decoded_data(decodedstring);
 
             //clear all buffers
             bytesRead = 0;
@@ -130,7 +174,35 @@ exit:
   return 0;
 }
 
-void verify_encoded_data(uint8_t decoded_string[])
+// int prev_i = 0;
+
+// void extract_enc_string(uint8_t buff_2,int i){
+
+//     uint16_t idx = 0;
+
+//     if((i > 0) && (i <= 256)){//255 data bytes + 1 size byte
+//         idx = buff_2[i-1];
+//     }
+    
+
+//     if(idx){ //if there is some size in input string
+//         printf("size bits:%d\r\n",idx);
+//         printf("\n");
+
+
+//         uint8_t decodedstring[200] = {0};
+
+//         //decoding
+//         decode_string(buff_2, idx, decodedstring);
+
+//         printf("\n%s\r\n", decodedstring);
+
+//         test_decoded_data(decodedstring);
+
+//     } 
+// }
+
+void test_decoded_data(uint8_t decoded_string[])
 {
     char data_sent[] = "entering a random strin";
 
@@ -138,6 +210,8 @@ void verify_encoded_data(uint8_t decoded_string[])
 		printf("Encode = decode\r\n");
 	}else
 		printf("Fail!\r\n");
+
+    printf("\r\n");
 }
 
 

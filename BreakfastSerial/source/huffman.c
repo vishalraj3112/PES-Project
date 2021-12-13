@@ -11,7 +11,6 @@
 
 #define MASK(x)     (0xFF >> (8-x))
 
-static int encode_string(char *message, uint8_t *buffer, size_t nbytes);
 static void decode_string(uint8_t encoded_buffer[], uint16_t encoded_bits, uint8_t decoded_buffer[]);
 static int min(int a,int b);
 
@@ -23,6 +22,8 @@ void huffman(void)
 
 	//char data_to_encode[] = "Just gonna stand there and watch me burn? Well, that's alright, because I like the way it hurts Just gonna stand there and hear me cry?";
 	char data_to_encode[] = "entering a random strin";
+
+	printf("%s",data_to_encode);//syswrite test
 
 	uint8_t buff[1024];
 

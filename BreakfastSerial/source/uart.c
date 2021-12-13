@@ -9,6 +9,7 @@
 ***********************************************************************************************************************/
 #include "MKL25Z4.h"
 #include "uart.h"
+#include "huff.h"
 
 //change uart parameters below
 #define BAUD_RATE		38400
@@ -134,13 +135,26 @@ void UART0_IRQHandler(void) {
 ***********************************************************************************************/
 int __sys_write(int handle, char * buf, int size){
 
+	uint8_t enc_buff[100];
+	uint8_t *enc_buff_ptr;
+	uint16_t size_idx = 0;
+	enc_buff_ptr = enc_buff;
+	uint8_t temp = 0;
+
+	uint16_t enc_bits = encode_string(buf, enc_buff, sizeof(enc_buff));//string encoded here
+
+	size_idx = (enc_bits >> 3) + 1;//should be 14 currently
+
+	enc_buff[size_idx] = enc_bits;//should be 109 currently or 0x6D
+
 	while(cbfifo_length(tx_fifo) == cbfifo_capacity(tx_fifo))//if tx_buff full wait
 		;
 
-	while(*buf != '\0'){
-		if(cbfifo_enqueue(tx_fifo,buf,1) == (size_t)-1)//enqueue error
+	while(*enc_buff_ptr != '\0'){
+		temp = *enc_buff_ptr;
+		if(cbfifo_enqueue(tx_fifo,enc_buff_ptr,1) == (size_t)-1)//enqueue error
 			return -1;//error case
-		buf++;
+		enc_buff_ptr++;
 	}
 
 	if (!(UART0->C2 & UART0_C2_TIE_MASK)) {

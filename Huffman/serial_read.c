@@ -78,9 +78,9 @@ int main()
     }
 
     int j =0;
-    for(j = 0; j < i; j++){
-        printf("buff[%d]: %c\n",j,buffer[j]);
-    }
+    // for(j = 0; j < i; j++){
+    //     printf("buff[%d]: %c\n",j,buffer[j]);
+    // }
 
     // do
     // {
@@ -101,28 +101,37 @@ int main()
     uint8_t temp[3] = {0}, num = 0, buff_2[20] = {0};
     uint16_t idx = 0;
     
-    for(i = 0 ; i < 32 ; i += 2){//15 bytes + 1
-        temp[0] = buffer[i];
-        temp[1] = buffer[i+1];
-        temp[2] = '\0';
+    // for(i = 0 ; i < 32 ; i += 2){//15 bytes + 1
+    //     temp[0] = buffer[i];
+    //     temp[1] = buffer[i+1];
+    //     temp[2] = '\0';
 
-        num = string_to_hex(temp);
-        buff_2[idx++] = num;
+    //     num = string_to_hex(temp);
+    //     buff_2[idx++] = num;
 
-        printf("Hex val = %x",num);
+    //     printf("Hex val = %x",num);
+    // }
+
+    for(i = 0 ; i < 14 ; i ++){
+        num = buffer[i];
+        buff_2[i] = num;
+        printf("buf[%d]:%x\r\n",i,num);
     }
+
+    idx = buffer[14];//logic required for this to be made
+    printf("size bits:%d\r\n",idx);
 
     printf("\n");
-    printf("Converted buffer:\n");
-    for(i = 0; i < sizeof(buff_2); i++)
-    {
-        printf("%x",buff_2[i]);
-    }
+    // printf("Converted buffer:\n");
+    // for(i = 0; i < sizeof(buff_2); i++)
+    // {
+    //     printf("%x",buff_2[i]);
+    // }
     
     uint8_t decodedstring[200] = {0};
 
     //decoding
-	decode_string(buff_2,(uint16_t) 109, decodedstring);
+	decode_string(buff_2, idx, decodedstring);
 
 	printf("\n%s\r\n", decodedstring);
 

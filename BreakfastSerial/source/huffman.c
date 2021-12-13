@@ -22,7 +22,7 @@ void huffman(void)
 	uint8_t decodedstring[200] = {0};
 
 	//char data_to_encode[] = "Just gonna stand there and watch me burn? Well, that's alright, because I like the way it hurts Just gonna stand there and hear me cry?";
-	char data_to_encode[] = "entering a random string";
+	char data_to_encode[] = "entering a random strin";
 
 	uint8_t buff[1024];
 

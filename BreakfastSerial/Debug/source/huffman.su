@@ -1,4 +1,4 @@
-huffman.c:20:6:huffman	1280	static
+huffman.c:20:6:huffman	1272	static
 huffman.c:54:5:encode_string	64	static
 huffman.c:103:5:min	16	static
 huffman.c:108:6:decode_string	48	static

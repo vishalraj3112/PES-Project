@@ -1,0 +1,82 @@
+Dec 11 04:05:45 vishal-Lenovo-ideapad-520S-14IKB rsyslogd:  [origin software="rsyslogd" swVersion="8.32.0" x-pid="885" x-info="http://www.rsyslog.com"] rsyslogd was HU
+Ped
+Dec 11 04:05:45 vishal-Lenovo-ideapad-520S-14IKB acvpnagent[915]: Function: GetSettings File: ../../vpn/Agent/ServicePluginMgr.cpp Line: 289 m_pIServicePlugin is NULL
+Dec 11 04:05:45 vishal-Lenovo-ideapad-520S-14IKB acvpnagent[915]: message repeated 4 times: [ Function: GetSettings File: ../../vpn/Agent/ServicePluginMgr.cpp Line: 28
+9 m_pIServicePlugin is NULL]
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB NetworkManager[872]: <info>  [1639175746.4427] manager: NetworkManager state is now CONNECTED_GLOBAL
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB dbus-daemon[862]: [system] Activating via systemd: service name='org.freedesktop.nm_dispatcher' unit='dbus-org.freedes
+ktop.nm-dispatcher.service' requested by ':1.14' (uid=0 pid=872 comm="/usr/sbin/NetworkManager --no-daemon " label="unconfined")
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB systemd[1]: Starting Network Manager Script Dispatcher Service...
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB whoopsie[1430]: [04:05:46] The default IPv4 route is: /org/freedesktop/NetworkManager/ActiveConnection/1
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB whoopsie[1430]: [04:05:46] Not a paid data plan: /org/freedesktop/NetworkManager/ActiveConnection/1
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB whoopsie[1430]: [04:05:46] Found usable connection: /org/freedesktop/NetworkManager/ActiveConnection/1
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB whoopsie[1430]: [04:05:46] online
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB dbus-daemon[862]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB systemd[1]: Started Network Manager Script Dispatcher Service.
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB nm-dispatcher: req:1 'connectivity-change': new request (1 scripts)
+Dec 11 04:05:46 vishal-Lenovo-ideapad-520S-14IKB nm-dispatcher: req:1 'connectivity-change': start running ordered scripts...
+Dec 11 04:05:48 vishal-Lenovo-ideapad-520S-14IKB anacron[864]: Job `cron.daily' terminated
+Dec 11 04:05:48 vishal-Lenovo-ideapad-520S-14IKB anacron[864]: Normal exit (1 job run)
+Dec 11 04:06:09 vishal-Lenovo-ideapad-520S-14IKB dhclient[1555]: XMT: Renew on wlp2s0, interval 303230ms.
+Dec 11 04:07:45 vishal-Lenovo-ideapad-520S-14IKB systemd[1]: Starting Ubuntu Advantage Timer for running repeated jobs...
+Dec 11 04:07:45 vishal-Lenovo-ideapad-520S-14IKB systemd[1]: Started Ubuntu Advantage Timer for running repeated jobs.
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB gnome-software[2503]: no app for changed ubuntu-dock@ubuntu.com
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB gnome-shell[2145]: Object .Gjs_AppIndicatorIconActor__1 (0x55eeb4e7f840), has been already finalized. Impossible to se
+t any property to it.
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: == Stack trace for context 0x55eeb291c340 ==
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #0 0x7ffed15c99d0 I   resource:///org/gnome/gjs/modules/_legacy.js:83 (0x7f0bf80b5de0 @
+ 87)
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #1 0x55eeb2cad6f0 i   /usr/share/gnome-shell/extensions/ubuntu-appindicators@ubuntu.com
+/indicatorStatusIcon.js:93 (0x7f0bb47cab38 @ 58)
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #2 0x7ffed15ca5b0 I   resource:///org/gnome/gjs/modules/_legacy.js:82 (0x7f0bf80b5de0 @
+ 71)
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #3 0x7ffed15ca670 b   self-hosted:916 (0x7f0bf80f12b8 @ 367)
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #4 0x7ffed15ca760 b   resource:///org/gnome/gjs/modules/signals.js:128 (0x7f0bf80d2230 
+@ 386)
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #5 0x55eeb2cad668 i   /usr/share/gnome-shell/extensions/ubuntu-appindicators@ubuntu.com
+/appIndicator.js:190 (0x7f0bb47bd808 @ 22)
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #6 0x7ffed15cb3b0 I   resource:///org/gnome/gjs/modules/_legacy.js:82 (0x7f0bf80b5de0 @
+ 71)
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #7 0x55eeb2cad5c0 i   /usr/share/gnome-shell/extensions/ubuntu-appindicators@ubuntu.com
+/statusNotifierWatcher.js:219 (0x7f0bb47b8de0 @ 225)
+Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #8 0x7ffed15cbf90 I   resource:///org/gnome/gjs/modules/_legacy.js:82 (0x7f0bf80b5de0 @
+ 71)
+Dec 11 04:33:42 vishal-Lenovo-ideapad-520S-14IKB rtkit-daemon[1171]: message repeated 5 times: [ Supervising 3 threads of 1 processes of 1 users.]
+Dec 11 04:33:42 vishal-Lenovo-ideapad-520S-14IKB rtkit-daemon[1171]: Successfully made thread 3096 of process 2979 (n/a) owned by '1000' RT at priority 10.
+Dec 11 04:33:42 vishal-Lenovo-ideapad-520S-14IKB rtkit-daemon[1171]: Supervising 4 threads of 2 processes of 1 users.
+Dec 11 04:33:46 vishal-Lenovo-ideapad-520S-14IKB rtkit-daemon[1171]: message repeated 10 times: [ Supervising 4 threads of 2 processes of 1 users.]
+Dec 11 04:34:25 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: [Parent 2979, IPC I/O Parent] WARNING: FileDescriptorSet destroyed with unconsumed desc
+riptors: file /build/firefox-fXSvPi/firefox-94.0+build3/ipc/chromium/src/chrome/common/file_descriptor_set_posix.cc:19
+Dec 11 04:34:26 vishal-Lenovo-ideapad-520S-14IKB rtkit-daemon[1171]: Supervising 4 threads of 2 processes of 1 users.
+Dec 11 04:34:27 vishal-Lenovo-ideapad-520S-14IKB rtkit-daemon[1171]: message repeated 5 times: [ Supervising 4 threads of 2 processes of 1 users.]
+Dec 11 04:35:55 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: ###!!! [Child][MessageChannel] Error: (msgtype=0x5B000C,name=PHttpChannel::Msg___delete
+__) Channel closing: too late to send/recv, messages will be lost
+Dec 11 04:35:58 vishal-Lenovo-ideapad-520S-14IKB rtkit-daemon[1171]: Supervising 4 threads of 2 processes of 1 users.
+Dec 11 04:38:55 vishal-Lenovo-ideapad-520S-14IKB rtkit-daemon[1171]: message repeated 7 times: [ Supervising 4 threads of 2 processes of 1 users.]
+Dec 11 04:42:45 vishal-Lenovo-ideapad-520S-14IKB dhclient[1555]: XMT: Renew on wlp2s0, interval 545350ms.
+Dec 11 04:46:15 vishal-Lenovo-ideapad-520S-14IKB NetworkManager[872]: <info>  [1639178175.2753] connectivity: (wlp2s0) timed out
+Dec 11 04:46:15 vishal-Lenovo-ideapad-520S-14IKB NetworkManager[872]: <info>  [1639178175.2755] manager: NetworkManager state is now CONNECTED_SITE
+Dec 11 04:46:15 vishal-Lenovo-ideapad-520S-14IKB dbus-daemon[862]: [system] Activating via systemd: service name='org.freedesktop.nm_dispatcher' unit='dbus-org.freedes
+ktop.nm-dispatcher.service' requested by ':1.14' (uid=0 pid=872 comm="/usr/sbin/NetworkManager --no-daemon " label="unconfined")
+Dec 11 04:46:15 vishal-Lenovo-ideapad-520S-14IKB systemd[1]: Starting Network Manager Script Dispatcher Service...
+Dec 11 04:46:15 vishal-Lenovo-ideapad-520S-14IKB whoopsie[1430]: [04:46:15] Cannot reach: https://daisy.ubuntu.com
+Dec 11 04:46:15 vishal-Lenovo-ideapad-520S-14IKB whoopsie[1430]: [04:46:15] offline
+Dec 11 04:46:15 vishal-Lenovo-ideapad-520S-14IKB dbus-daemon[862]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+Dec 11 04:46:15 vishal-Lenovo-ideapad-520S-14IKB systemd[1]: Started Network Manager Script Dispatcher Service.
+Dec 11 04:46:15 vishal-Lenovo-ideapad-520S-14IKB nm-dispatcher: req:1 'connectivity-change': new request (1 scripts)
+Dec 11 04:46:15 vishal-Lenovo-ideapad-520S-14IKB nm-dispatcher: req:1 'connectivity-change': start running ordered scripts...
+Dec 11 04:47:12 vishal-Lenovo-ideapad-520S-14IKB kernel: [ 2794.285885] huffman[3566]: segfault at 5600c5bf00cc ip 00005600c59ec151 sp 00007ffc59c18bf0 error 6 in huffman[5600c59eb000+3000]
+Dec 11 04:47:12 vishal-Lenovo-ideapad-520S-14IKB kernel: [ 2794.285891] Code: 89 d0 48 c1 e0 02 48 01 d0 48 8d 14 85 00 00 00 00 48 01 d0 48 c1 e0 02 48 01 c8 48 8d 14 85 00 00 00 00 48 8d 05 8f 27 20 00 <c7> 04 02 01 00 00 00 8b 05 26 37 20 00 83 c0 01 89 05 1d 37 20 00
+Dec 11 04:49:49 vishal-Lenovo-ideapad-520S-14IKB kernel: [ 2951.119426] huffman[3584]: segfault at 55f0627e30cc ip 000055f0625df151 sp 00007fff37f3e180 error 6 in huffman[55f0625de000+3000]
+Dec 11 04:49:49 vishal-Lenovo-ideapad-520S-14IKB kernel: [ 2951.119446] Code: 89 d0 48 c1 e0 02 48 01 d0 48 8d 14 85 00 00 00 00 48 01 d0 48 c1 e0 02 48 01 c8 48 8d 14 85 00 00 00 00 48 8d 05 8f 27 20 00 <c7> 04 02 01 00 00 00 8b 05 26 37 20 00 83 c0 01 89 05 1d 37 20 00
+Dec 11 04:50:49 vishal-Lenovo-ideapad-520S-14IKB NetworkManager[872]: <info>  [1639178449.4387] manager: NetworkManager state is now CONNECTED_GLOBAL
+Dec 11 04:50:49 vishal-Lenovo-ideapad-520S-14IKB dbus-daemon[862]: [system] Activating via systemd: service name='org.freedesktop.nm_dispatcher' unit='dbus-org.freedesktop.nm-dispatcher.service' requested by ':1.14' (uid=0 pid=872 comm="/usr/sbin/NetworkManager --no-daemon " label="unconfined")
+Dec 11 04:50:49 vishal-Lenovo-ideapad-520S-14IKB whoopsie[1430]: [04:50:49] Cannot reach: https://daisy.ubuntu.com
+Dec 11 04:50:49 vishal-Lenovo-ideapad-520S-14IKB systemd[1]: Starting Network Manager Script Dispatcher Service...
+Dec 11 04:50:49 vishal-Lenovo-ideapad-520S-14IKB whoopsie[1430]: [04:50:49] The default IPv4 route is: /org/freedesktop/NetworkManager/ActiveConnection/1
+Dec 11 04:50:49 vishal-Lenovo-ideapad-520S-14IKB whoopsie[1430]: [04:50:49] Not a paid data plan: /org/freedesktop/NetworkManager/ActiveConnection/1
+Dec 11 04:50:49 vishal-Lenovo-ideapad-520S-14IKB whoopsie[1430]: [04:50:49] Found usable connection: /org/freedesktop/NetworkManager/ActiveConnection/1
+Dec 11 04:50:49 vishal-Lenovo-ideapad-520S-14IKB dbus-daemon[862]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+Dec 11 04:50:49 vishal-Lenovo-ideapad-520S-14IKB systemd[1]: Started Network Manager Script Dispatcher Service.
+Dec 11 04:50:49 vishal-Lenovo-ideapad-520S-14IKB nm-dispatcher: req:1 'connectivity-change': new request (1 scripts)
+

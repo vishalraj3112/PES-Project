@@ -4,7 +4,8 @@
 #include <string.h>
 #include <stdint.h>
 //#include <math.h>  
-#include "huffman.h"
+//#include "huffman.h"
+#include <assert.h>
 
 // This constant can be avoided by explicitly
 // calculating height of Huffman Tree
@@ -41,14 +42,16 @@ struct MinHeap {
     struct MinHeapNode** array;
 };
 
-// typedef struct{
-//     uint8_t data;       //Data being coded
-//     uint32_t ccode;     //Character code for data
-//     int32_t no_bits;    //Number of bits in char code
-//     int32_t freq;       //frequency of data
-// }huffman_table_t;
+//***tree generation struct
+ typedef struct{
+    uint8_t data;       //Data being coded
+     uint32_t ccode;     //Character code for data
+     int32_t no_bits;    //Number of bits in char code
+     int32_t freq;       //frequency of data
+ }huffman_table_t;
 
-// huffman_table_t huffman_table[MAX_CHAR] = {{.data = 'x', .ccode = 0, .no_bits = 0}};
+huffman_table_t huffman_table[MAX_CHAR] = {{.data = 'x', .ccode = 0, .no_bits = 0}};
+//***tree generation struct
 
 static void printFreq(int freq[],char arr[], int freq_new[]);
 static int getFrequency(uint8_t string[]);
@@ -59,6 +62,7 @@ static void print_lut(void);
 static void decode_string(uint8_t encoded_buffer[], uint16_t encoded_bits, uint8_t decoded_buffer[]);
 static void store_data(char data, int arr[],int no_bits);
 static int min(int a,int b);
+static void test_huffman_encode_decode(void);
 
 char encoded_string[100] = {0};
 
@@ -396,15 +400,12 @@ struct MinHeapNode* HuffmanCodes(char data[], int freq[], int size)
 
 int main()
 {
-    uint8_t decodedstring[200] = {0};
-    //uint8_t string[256] = "";
     char * string;
-    uint8_t data_to_encode[] = "Just gonna stand there and watch me burn? Well, that's alright, because I like the way it hurts Just gonna stand there and hear me cry?";
     long files_bytes = 0;
     int ctr = 0;
     
     //***File read
-    char * filename = "input.txt";
+    char * filename = "input2.txt";
     FILE *fp = fopen(filename,"r");
 
     if(fp == NULL){
@@ -428,7 +429,7 @@ int main()
     fread(string,sizeof(char),files_bytes,fp);
     fclose(fp);
     printf("File data:");
-    printf("%s\r\n",string);
+    //printf("%s\r\n",string);
 
     /*free allocated memory*/
     //free(string);
@@ -461,24 +462,90 @@ int main()
     print_lut();
     //gen_huffman_header();
 
-    uint8_t buff[1024];
-
-    uint16_t indexes = encode_string(data_to_encode, buff, sizeof(buff));//string encoded here
-
-    //decode here itself
-    //decode_file(root, buff, decodedstring);
-    decode_string(buff, indexes, decodedstring);
-
-    printf("\n%s\n", decodedstring);
-
-    if(!strncmp(data_to_encode,decodedstring,strlen(data_to_encode))){
-        printf("Encode = decode\r\n");
-    }else
-        printf("Fail!");
+    test_huffman_encode_decode();
 
     free(string);
   
     return 0;
+}
+
+void test_huffman_encode_decode(void)
+{
+    uint8_t decodedstring[200] = {0};
+
+    uint8_t data_to_encode[] = "Dec 11 04:05:45 vishal-Lenovo-ideapad-520S-14IKB rsyslogd:";
+    uint8_t data_to_encode2[] = "Just gonna stand there and watch me burn Well, that's alright, because I like the way it hurts Just gonna stand there and hear me cry";
+    uint8_t data_to_encode3[] = "Entering a random string";
+    uint8_t data_to_encode4[] = "test string 12345 RaNDommmmm cAsinggg";
+
+
+    uint8_t buff[100];
+
+    //test for input - 1
+    uint16_t indexes = encode_string(data_to_encode, buff, sizeof(buff));//string encoded here
+    printf("index:%d",indexes );
+
+    for(int i = 0 ;i <sizeof(buff); i++)
+    {
+        printf("buf[%d]:%x\r\n",i,buff[i]);
+    }
+
+    decode_string(buff, indexes, decodedstring);
+
+    printf("\n%s\n", decodedstring);
+
+    assert(!strncmp(data_to_encode,decodedstring,strlen(data_to_encode)));
+    if(!strncmp(data_to_encode,decodedstring,strlen(data_to_encode))){
+        printf("Encode = decode\r\n");
+    }else
+        printf("Fail test 1!\r\n");
+
+    memset(buff, 0, sizeof(buff));
+    memset(decodedstring,0,sizeof(decodedstring));
+
+    //test for input - 2
+    indexes = encode_string(data_to_encode2, buff, sizeof(buff));//string encoded here
+
+    decode_string(buff, indexes, decodedstring);
+
+    printf("\n%s\n", decodedstring);
+
+    assert(!strncmp(data_to_encode2,decodedstring,strlen(data_to_encode2)));
+    if(!strncmp(data_to_encode2,decodedstring,strlen(data_to_encode2))){
+        printf("Encode = decode\r\n");
+    }else
+        printf("Fail test 2!\r\n");
+
+    memset(buff, 0, sizeof(buff));
+    memset(decodedstring,0,sizeof(decodedstring));
+
+    //test for input - 3
+    indexes = encode_string(data_to_encode3, buff, sizeof(buff));//string encoded here
+
+    decode_string(buff, indexes, decodedstring);
+
+    printf("\n%s\n", decodedstring);
+
+    assert(!strncmp(data_to_encode3,decodedstring,strlen(data_to_encode3)));
+    if(!strncmp(data_to_encode3,decodedstring,strlen(data_to_encode3))){
+        printf("Encode = decode\r\n");
+    }else
+        printf("Fail test 3!\r\n");
+
+
+    memset(buff, 0, sizeof(buff));
+    memset(decodedstring,0,sizeof(decodedstring));
+
+    //test for input - 4
+    indexes = encode_string(data_to_encode4, buff, sizeof(buff));//string encoded here
+    decode_string(buff, indexes, decodedstring);
+    printf("\n%s\n", decodedstring);
+    assert(!strncmp(data_to_encode4,decodedstring,strlen(data_to_encode4)));
+ 
+
+    printf("\n");
+    printf("All tests passed!\r\n");
+
 }
 
 void gen_huffman_header(void)
@@ -504,9 +571,9 @@ void print_lut(void)
     printf("huffman_table_t huffman_table[] = {\n");
     for (int i = 0; i < MAX_CHAR; i++) {
         if (i != MAX_CHAR-1)
-            printf("{%d, 0x%02x, %d},\n", huffman_table[i].data, (huffman_table[i].ccode>>1), huffman_table[i].no_bits);//Check %02x !!
+            printf("{%d, 0x%02x, %d},\n", huffman_table[i].data, (huffman_table[i].ccode), huffman_table[i].no_bits);//Check %02x !!
         else
-            printf("{%d, 0x%02x, %d} };\n\n", huffman_table[i].data, (huffman_table[i].ccode>>1), huffman_table[i].no_bits);
+            printf("{%d, 0x%02x, %d} };\n\n", huffman_table[i].data, (huffman_table[i].ccode), huffman_table[i].no_bits);
     }
 }
 

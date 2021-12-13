@@ -101,7 +101,7 @@ int main()
     uint8_t temp[3] = {0}, num = 0, buff_2[20] = {0};
     uint16_t idx = 0;
     
-    for(i = 0 ; i < 28 ; i += 2){//14 bytes + 1
+    for(i = 0 ; i < 32 ; i += 2){//15 bytes + 1
         temp[0] = buffer[i];
         temp[1] = buffer[i+1];
         temp[2] = '\0';
@@ -122,7 +122,7 @@ int main()
     uint8_t decodedstring[200] = {0};
 
     //decoding
-	decode_string(buff_2,(uint16_t) 105, decodedstring);
+	decode_string(buff_2,(uint16_t) 109, decodedstring);
 
 	printf("\n%s\r\n", decodedstring);
 
@@ -136,7 +136,7 @@ exit:
 
 void verify_encoded_data(uint8_t decoded_string[])
 {
-    char data_sent[] = "entering a random string";
+    char data_sent[] = "entering a random strin";
 
     if(!strncmp(data_sent,decoded_string,strlen(data_sent))){
 		printf("Encode = decode\r\n");

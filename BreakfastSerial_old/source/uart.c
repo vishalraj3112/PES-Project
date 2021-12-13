@@ -139,19 +139,20 @@ int __sys_write(int handle, char * buf, int size){
 	uint8_t *enc_buff_ptr;
 	uint16_t size_idx = 0;
 	enc_buff_ptr = enc_buff;
-	uint8_t temp = 0;
+	//uint8_t temp = 0;
 
 	uint16_t enc_bits = encode_string(buf, enc_buff, sizeof(enc_buff));//string encoded here
 
 	size_idx = (enc_bits >> 3) + 1;//should be 14 currently
 
 	enc_buff[size_idx] = enc_bits;//should be 109 currently or 0x6D
+	enc_buff[size_idx + 1] = 0xFF;//entering special end of string token
 
 	while(cbfifo_length(tx_fifo) == cbfifo_capacity(tx_fifo))//if tx_buff full wait
 		;
 
 	while(*enc_buff_ptr != '\0'){
-		temp = *enc_buff_ptr;
+		//temp = *enc_buff_ptr;
 		if(cbfifo_enqueue(tx_fifo,enc_buff_ptr,1) == (size_t)-1)//enqueue error
 			return -1;//error case
 		enc_buff_ptr++;

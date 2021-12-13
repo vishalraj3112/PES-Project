@@ -54,7 +54,6 @@ int main()
         goto exit;
     }
 
-    int j = 0; 
     //Read port
     //Setting Receive Mask
     // status = SetCommMask(hComm, EV_RXCHAR);
@@ -78,7 +77,10 @@ int main()
         status = ReadFile(hComm, &ReadData, sizeof(ReadData), &bytesRead, NULL);
     }
 
-    
+    int j =0;
+    // for(j = 0; j < i; j++){
+    //     printf("buff[%d]: %c\n",j,buffer[j]);
+    // }
 
     // do
     // {
@@ -91,34 +93,37 @@ int main()
     //print receive data on console
     //printf("\n\n");
     // int j = 0;
-
-    for(j = 0; j < i ; j++){
-        printf("buff[%d]: %x\n",j,buffer[j]);
-    }
-
+    // for (j = 0; j < i; ++j)
+    // {
+    //     printf("buff[%d]: %c\n",j,buffer[j]);
+    // }
+    // printf("\n\n");
     uint8_t temp[3] = {0}, num = 0, buff_2[20] = {0};
     uint16_t idx = 0;
-
-    j = 0;
 
     // for(i = 0 ; i < 14 ; i ++){
     //     num = buffer[i];
     //     buff_2[i] = num;
     //     printf("buf[%d]:%x\r\n",i,num);
     // }
-    while(buffer[j] != 0xFF){
-        num = buffer[j];
-        buff_2[j] = num;
-        printf("buf[%d]:%x\r\n",j,num);
-        j++;
+    i = 0;
+    while(buffer[i] != '\0'){
+        num = buffer[i];
+        buff_2[i] = num;
+        printf("buf[%d]:%x\r\n",i,num);
+        if(num == 0xff){
+            printf("Token!\r\n");
+            break;
+        }
+        i++;
     }
 
     //idx = buffer[14];//logic required for this to be made
-    if((j > 0) && (j <= 256)){//255 data bytes + 1 size byte
-        idx = buffer[j];
+    if((i > 0) && (i <= 256)){//255 data bytes + 1 size byte
+        idx = buff_2[i-1];
     }
-    j = 0;//reset for next cycle
-    
+    i = 0;//reset for next cycle
+
     printf("size bits:%d\r\n",idx);
 
     printf("\n");

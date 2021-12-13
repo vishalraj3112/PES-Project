@@ -36,7 +36,6 @@ int main(void)
 	test_cbfifo();//Test cbfifo once
 	#endif
 
-	//printf("Test string\r\n");
 
 	huffman();
 

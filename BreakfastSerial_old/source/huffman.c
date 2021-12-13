@@ -13,17 +13,20 @@
 
 static void decode_string(uint8_t encoded_buffer[], uint16_t encoded_bits, uint8_t decoded_buffer[]);
 static int min(int a,int b);
+static void test_syswrite_encoding(void);
 
 int encoded_bits = 0;
 
 void huffman(void)
 {
+
+	test_syswrite_encoding();
+
 	uint8_t decodedstring[200] = {0};
 
-	//char data_to_encode[] = "Just gonna stand there and watch me burn? Well, that's alright, because I like the way it hurts Just gonna stand there and hear me cry?";
 	char data_to_encode[] = "entering a random strin";
-
-	printf("%s",data_to_encode);//syswrite test
+//
+//	printf("%s",data_to_encode);//syswrite test
 
 	uint8_t buff[1024];
 
@@ -43,13 +46,20 @@ void huffman(void)
 
 	printf("\n%s\r\n", decodedstring);
 
-	if(!strncmp(data_to_encode,decodedstring,strlen(data_to_encode))){
+	if(!strncmp((char *)data_to_encode,(char *)decodedstring,strlen(data_to_encode))){
 		printf("Encode = decode\r\n");
 	}else
 		printf("Fail!\r\n");
 
 	//Now send the encoded string over UART
 
+}
+
+void test_syswrite_encoding(void)
+{
+	char data_to_encode[] = "entering a random strin";
+
+	printf("%s",data_to_encode);//syswrite test
 }
 
 int encode_string(char *message, uint8_t *buffer, size_t nbytes)

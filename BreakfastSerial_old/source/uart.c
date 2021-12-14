@@ -129,7 +129,9 @@ void UART0_IRQHandler(void) {
 }
 /***********************************************************************************************
 * Name			   : __sys_write
-* Description 	   : glue function for tying uart write with stdio functions in redlib.
+* Description 	   : glue function for tying uart write with stdio functions in redlib. This
+* 					 function has been modified for huffman encoding. All input strings are
+* 					 huffman encoded. Read project document for details
 * Parameters 	   : handle for stdio or stderr, buffer to be printed and upto size bytes
 * RETURN 		   : 0 for success and -1 on error
 ***********************************************************************************************/
@@ -139,18 +141,18 @@ int __sys_write(int handle, char * buf, int size){
 	uint8_t *enc_buff_ptr;
 	uint16_t size_idx = 0;
 	enc_buff_ptr = enc_buff;
-	//uint8_t temp = 0;
 
 	uint16_t enc_bits = encode_string(buf, enc_buff, sizeof(enc_buff));//string encoded here
 
-	size_idx = (enc_bits >> 3) + 1;//should be 14 currently
+	size_idx = (enc_bits >> 3) + 1;
 
+	/*If size of encoded buffer is less than 255 bits */
 	if(enc_bits > 0xFF){
 		enc_buff[size_idx] = enc_bits & 0x00FF;
 		enc_buff[size_idx + 1] = (enc_bits>>8) & 0x00FF;
 		enc_buff[size_idx + 2] = 0xFF;
 	}else{
-		enc_buff[size_idx] = enc_bits;//should be 109 currently or 0x6D
+		enc_buff[size_idx] = enc_bits;
 		enc_buff[size_idx + 1] = 0xFF;//entering special end of string token
 	}
 
@@ -158,7 +160,6 @@ int __sys_write(int handle, char * buf, int size){
 		;
 
 	while(*enc_buff_ptr != '\0'){
-		//temp = *enc_buff_ptr;
 		if(cbfifo_enqueue(tx_fifo,enc_buff_ptr,1) == (size_t)-1)//enqueue error
 			return -1;//error case
 		enc_buff_ptr++;

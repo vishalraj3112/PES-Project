@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
 * File Name    : main.c
-* Project      : PES Assignment 6
+* Project      : PES Final Project
 * Version      : 1.0
 * Description  : Contains all the function calls code to the various functions for command terminal operation
 * Author       : Vishal Raj
@@ -36,10 +36,11 @@ int main(void)
 	test_cbfifo();//Test cbfifo once
 	#endif
 
+	/*Huffman encoding on KL25 for PC and encoding-decoding for KL25Z itself is executed first*/
+	exe_huffman_task();
 
-	huffman();
-
-	printf("Welcome to BreakfastSerial!\r\n");
+	//continue with old command processor after compression
+	printf("Welcome to PES Project!\r\n");
 	printf("? ");
 	while (1) {
 		user_input_ptr = accumulator(user_input);

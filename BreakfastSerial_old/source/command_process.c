@@ -1,10 +1,10 @@
 /***********************************************************************************************************************
 * File Name    : command_process.c
-* Project      : PES Assignment 6
-* Version      : 1.0
+* Project      : PES Final Project
+* Version      : 2.0
 * Description  : Contains all the function implementation code along with variable definitions for command processor
 * Author       : Vishal Raj & reference from Howdy Pierce Lec 22 slide
-* Creation Date: 11.10.21
+* Creation Date: 12.12.21
 ***********************************************************************************************************************/
 #include "command_process.h"
 #include <stdio.h>
@@ -238,6 +238,6 @@ void info_handler(int argc,char * argv[])
 void huffman_handler(int argc, char * argv[])
 {
 	printf("Huffman case\r\n");
-	huffman();
+	exe_huffman_task();
 }
 /*[EOF]*/

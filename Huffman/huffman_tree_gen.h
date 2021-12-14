@@ -4,7 +4,7 @@
 * Version      : 1.0
 * Description  : Contains the huffman tree lookup table used for encoding and deoding on KL25Z and PC.
 * Author       : Vishal Raj
-* Creation Date: 13.09.21
+* Creation Date: 12.10.21
 ***********************************************************************************************************************/
 #ifndef _HUFFMAN_TREE_GEN_H_
 #define _HUFFMAN_TREE_GEN_H_

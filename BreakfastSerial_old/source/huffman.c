@@ -1,9 +1,11 @@
-/*
- * huffman.c
- *
- *  Created on: 11-Dec-2021
- *      Author: vishalraj
- */
+/***********************************************************************************************************************
+* File Name    : huffman.c
+* Project      : PES Final Project
+* Version      : 1.0
+* Description  : Contains all the function implementation code for huffman encode-deocode on KL25Z.
+* Author       : Vishal Raj & encoding algorithm referred from Howdy Pierce-Media compression PES lecture 26.
+* Creation Date: 12.11.21
+***********************************************************************************************************************/
 #include "huffman.h"
 #include "huff.h"
 #include <string.h>
@@ -17,9 +19,16 @@ static int min(int a,int b);
 static void test_syswrite_encoding(void);
 static void test_huffman_encode_decode(void);
 
-int encoded_bits = 0;
 
-void huffman(void)
+/***********************************************************************************************
+* Name			   : exe_huffman_task
+* Description 	   : used to conduct test syswrite test, by compressing data here and decompress
+* 					 is performed on the P, then compression-decompression is performed on the
+* 					 KL25Z itself
+* Parameters 	   : None
+* RETURN 		   : None
+***********************************************************************************************/
+void exe_huffman_task(void)
 {
 
 	test_syswrite_encoding();
@@ -28,6 +37,12 @@ void huffman(void)
 
 }
 
+/***********************************************************************************************
+* Name			   : test_syswrite_encoding
+* Description 	   : KL25Z compression is performed in syswrite function over here.
+* Parameters 	   : None
+* RETURN 		   : None
+***********************************************************************************************/
 void test_syswrite_encoding(void)
 {
 	char data_to_encode1[] = "entering a random strin";
@@ -44,6 +59,13 @@ void test_syswrite_encoding(void)
 
 }
 
+/***********************************************************************************************
+* Name			   : test_huffman_encode_decode
+* Description 	   : KL25Z encode-decode unit test function, used to test the itegrity of the
+* 					 algorithm.
+* Parameters 	   : None
+* RETURN 		   : None
+***********************************************************************************************/
 void test_huffman_encode_decode(void)
 {
     uint8_t decodedstring[200] = {0};
@@ -87,84 +109,96 @@ void test_huffman_encode_decode(void)
 
 }
 
-int encode_string(char *message, uint8_t *buffer, size_t nbytes)
+/***********************************************************************************************
+* Name			   : encode_string
+* Description 	   : encoding of input string performed here, called from syswrite, uses huffman
+* 					 look-up table for ccodes.
+* Parameters 	   : string to be encoded, buffer to store the encoded values, size of the buffer
+* RETURN 		   : None
+***********************************************************************************************/
+int encode_string(char *string, uint8_t *buff, size_t no_bytes)
 {
-    if(*message == '\0') {
+    if(*string == '\0') {
         printf("Error: Empty Message");
         return 0;
     }
 
-//    int min_idx = 0;
     int i;
-    int bits_written = 0;
+    int bits_to_write = 0;
     int buffer_idx = 0;
 
-    memset(buffer, 0, nbytes);
+    memset(buff, 0, no_bytes);
 
-    //while(*message != '\0') {
-    for (char *p = message; *p != '\0'; p++) {
+    for (char *p = string; *p != '\0'; p++) {
         for (i = 0; huffman_table[i].data != *p; i++);
 
-        //uint32_t code = (huffman_table[i].ccode>>1);//struct memory alignment issue hence need to shift->when using LUT
         uint32_t code = huffman_table[i].ccode;//when not using LUT
         int no_bits = huffman_table[i].no_bits;
 
 
         while(no_bits > 0) {
-            int this_write = min(8 - bits_written, no_bits);
+            int this_write = min(8 - bits_to_write, no_bits);
 
             int readshift = no_bits - this_write;
             uint32_t temp = (code >> readshift) & MASK(this_write)/*((1UL << this_write) -1)*/;
 
-            int write_shift = 8 - bits_written - this_write;
-            buffer[buffer_idx] |= temp << write_shift;
+            int write_shift = 8 - bits_to_write - this_write;
+            buff[buffer_idx] |= temp << write_shift;
 
-            bits_written += this_write;
+            bits_to_write += this_write;
             no_bits -= this_write;
 
-            if (bits_written == 8) {
-                bits_written = 0;
+            if (bits_to_write == 8) {
+            	bits_to_write = 0;
                 buffer_idx++;
             }
         }
     }
 
-    encoded_bits = (buffer_idx * 8) + bits_written;
-//    if (bits_written > 0)
-//        min_idx = 1;
-
-    return 8*buffer_idx + bits_written;
+    return 8*buffer_idx + bits_to_write;
 }
 
+/***********************************************************************************************
+* Name			   : min
+* Description 	   : function to find the minimum of two values
+* Parameters 	   : two parameters whose minimum is to be found
+* RETURN 		   : min between a and b
+***********************************************************************************************/
 int min(int a,int b)
 {
 	return (a <= b) ? a : b;
 }
 
+/***********************************************************************************************
+* Name			   : decode_string
+* Description 	   : function to decode an encoded input using the huffman LUT
+* Parameters 	   : encoded buffer, no of encoded bits and the buffer to store the decoded bits.
+* RETURN 		   : min between a and b
+***********************************************************************************************/
 void decode_string(uint8_t enc_buff[], uint16_t enc_bits, uint8_t dec_buff[])
 {
     uint8_t *cc_buf = enc_buff;//problem of this is that the input buffer would be lost
     uint16_t enc_idx = 0, dec_idx = 0;
     uint16_t ccode = 0x00, ccode_len = 1;
-    uint16_t i = 1, curr_pos = 0;//indexes
+    uint16_t idx = 1, curr_pos = 0;//indexes
 
     while(enc_bits != 0){
 
         ccode |= (cc_buf[enc_idx] & 0x80) >> 7;//read the char codes in reverse
 
 
-        while(huffman_table[i].data != '\0'){//till end of LUT is not reached
-            if(ccode_len == huffman_table[i].no_bits){//length match
-                if(ccode == huffman_table[i].ccode){//ccode match
-                    dec_buff[dec_idx++] = huffman_table[i].data;
+        while(huffman_table[idx].data != '\0'){//till end of LUT is not reached
+            if(ccode_len == huffman_table[idx].no_bits){//length match
+                if(ccode == huffman_table[idx].ccode){//ccode match
+                    dec_buff[dec_idx++] = huffman_table[idx].data;
                     ccode = 0;
                     ccode_len = 0;
                     break;
                 }
             }
-            i++;
+            idx++;
         }
-        i = 1; //if match then restart
+        idx = 1; //if match then restart
 
         ccode <<= 1;//shift 1 bits left for next read bit
         ccode_len++;
@@ -182,4 +216,4 @@ void decode_string(uint8_t enc_buff[], uint16_t enc_bits, uint8_t dec_buff[])
     }
     dec_buff[dec_idx] = '\0';
 }
-
+//[EOF]

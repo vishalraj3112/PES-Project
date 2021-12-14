@@ -71,9 +71,7 @@ char encoded_string[100] = {0};
 
 
   
-// A utility function allocate a new
-// min heap node with given character
-// and frequency of the character
+
 struct tree_node* gen_node(char data, unsigned freq)//l:231
 {
     struct tree_node* temp = (struct tree_node*)malloc(sizeof(struct tree_node));
@@ -85,8 +83,7 @@ struct tree_node* gen_node(char data, unsigned freq)//l:231
     return temp;
 }
   
-// A utility function to create
-// a min heap of given capacity
+
 struct Tree_heap* createTree_heap(unsigned capacity)
   
 {
@@ -101,8 +98,7 @@ struct Tree_heap* createTree_heap(unsigned capacity)
     return new_heap;
 }
   
-// A utility function to
-// swap two min heap nodes
+
 void swap_nodes(struct tree_node** x,struct tree_node** y)
   
 {
@@ -113,7 +109,7 @@ void swap_nodes(struct tree_node** x,struct tree_node** y)
     *x = temp;
 }
   
-// The standard gen_heap function.
+
 void gen_heap(struct Tree_heap* heap, int idx)
   
 { 
@@ -133,16 +129,14 @@ void gen_heap(struct Tree_heap* heap, int idx)
     }
 }
   
-// A utility function to check
-// if size of heap is 1 or not
+
 int check_heap_one(struct Tree_heap* heap)//l:216
 {
   
     return (heap->size == 1);
 }
   
-// A standard function to extract
-// minimum value node from heap
+
 struct tree_node* get_min_node(struct Tree_heap* heap)//l:220,221
   
 {
@@ -156,8 +150,7 @@ struct tree_node* get_min_node(struct Tree_heap* heap)//l:220,221
     return temp;
 }
   
-// A utility function to insert
-// a new node to Min Heap
+
 void insert_node(struct Tree_heap* heap, struct tree_node* node)//l:236
 {
   
@@ -175,7 +168,7 @@ void insert_node(struct Tree_heap* heap, struct tree_node* node)//l:236
     heap->array[i] = node;
 }
   
-// A standard function to build min heap
+
 void build_heap(struct Tree_heap* heap)
 {
   
@@ -187,7 +180,7 @@ void build_heap(struct Tree_heap* heap)
 }
 
   
-// Utility function to check if this node is leaf
+
 int isLeaf(struct tree_node* root)
   
 {
@@ -195,10 +188,7 @@ int isLeaf(struct tree_node* root)
     return !(root->left) && !(root->right);
 }
   
-// Creates a min heap of capacity
-// equal to size and inserts all character of
-// data[] in min heap. Initially size of
-// min heap is equal to capacity
+
 struct Tree_heap* build_tree_heap(char data[], int freq[], int size)
   
 {
@@ -214,7 +204,7 @@ struct Tree_heap* build_tree_heap(char data[], int freq[], int size)
     return heap;
 }
   
-// The main function that builds Huffman tree
+
 struct tree_node* gen_huffman_tree(char data[], int freq[], int size)
   
 {
@@ -241,8 +231,7 @@ struct tree_node* gen_huffman_tree(char data[], int freq[], int size)
     return get_min_node(heap);
 }
   
-// Prints huffman codes from the root of Huffman Tree.
-// It uses arr[] to store codes
+
 void store_char_codes(struct tree_node* root, int arr[], int top)
   
 {
@@ -328,9 +317,7 @@ int encode_string(char *message, uint8_t *buffer, size_t nbytes)
     return 8*buffer_idx + bits_written;
 }
   
-// The main function that builds a
-// Huffman Tree and print codes by traversing
-// the built Huffman Tree
+
 struct tree_node* gen_huffman_codes(char data[], int freq[], int size)
   
 {
@@ -393,8 +380,8 @@ int main()
 
     root = gen_huffman_codes(arr, freq, size);//generating huffman tree here
     //----tree generation over here
-    print_lut();
-    //gen_huffman_header();
+    //print_lut();
+    gen_huffman_header();
 
     test_huffman_encode_decode();
 

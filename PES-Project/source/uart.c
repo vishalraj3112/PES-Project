@@ -1,11 +1,11 @@
 /***********************************************************************************************************************
 * File Name    : uart.c
-* Project      : PES Assignment 6
-* Version      : 1.0
+* Project      : PES Final Project
+* Version      : 2.0
 * Description  : Contains all the function implementation code along with variable definitions for uart module
 * Author       : Vishal Raj & referred from Dean chp 8-https://github.com/alexander-g-dean/ESF/tree/master/NXP/Code/
 * 				 Chapter_8/Serial-Demo.
-* Creation Date: 11.10.21
+* Creation Date: 12.12.21
 ***********************************************************************************************************************/
 #include "MKL25Z4.h"
 #include "uart.h"

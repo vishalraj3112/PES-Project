@@ -99,8 +99,13 @@ int main()
                 //extract_enc_string(buff_2,i);
                 length = i - prev_i;
 
-                if((length > 0) && (length <= 256)){//255 data bytes + 1 size byte
+                if((length > 0) && (length <= 32)){//255 data bytes + 1 size byte
                     idx = buff_2[i-1];
+                }else{
+                    printf("Here!\r\n");
+                    idx = buff_2[i-2];//Lower nibble
+                    uint16_t shift_temp = buff_2[i-1];
+                    idx |= shift_temp << 8;
                 }
 
                 prev_i = i;
@@ -212,6 +217,7 @@ void test_decoded_data(uint8_t decoded_string[], uint8_t input_no)
     char data_sent_2[] = "test string 12345 RaNDommmmm cAsinggg";
     char data_sent_3[] = "Just gonna stand there and watch me cry";
     char data_sent_4[] = "Dec 11 04:05:45 vishal-Lenovo-ideapad-520S-14";
+    char data_sent_5[] = "Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #0 0x7ffed15c99d0 I   resource:///org/gnome/gjs/modules/";
 
     if(input_no == 1){
 
@@ -251,8 +257,18 @@ void test_decoded_data(uint8_t decoded_string[], uint8_t input_no)
           tests_passed = false;
         }
     }
+    else if(input_no == 5){
 
-    if((tests_passed == true) && (input_no == 4))
+        assert(!strncmp(data_sent_5,decoded_string,strlen(data_sent_5)));
+        if(!strncmp(data_sent_5,decoded_string,strlen(data_sent_5)))
+          printf("Test 5 passed!\r\n");
+        else{
+          printf("Failed test 5!\r\n");
+          tests_passed = false;
+        }
+    }
+
+    if((tests_passed == true) && (input_no == 5))
         printf("\nAll PC decode tests passed!\r\n");
 
     printf("\r\n");

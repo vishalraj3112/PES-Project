@@ -474,7 +474,7 @@ void test_huffman_encode_decode(void)
     uint8_t decodedstring[200] = {0};
 
     uint8_t data_to_encode[] = "Dec 11 04:05:45 vishal-Lenovo-ideapad-520S-14IKB rsyslogd:";
-    uint8_t data_to_encode2[] = "Just gonna stand there and watch me burn Well, that's alright, because I like the way it hurts Just gonna stand there and hear me cry";
+    uint8_t data_to_encode2[] = "Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #0 0x7ffed15c99d0 I   resource:///org/gnome/gjs/modules/";
     uint8_t data_to_encode3[] = "Entering a random string";
     uint8_t data_to_encode4[] = "test string 12345 RaNDommmmm cAsinggg";
 

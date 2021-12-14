@@ -61,11 +61,13 @@ void test_syswrite_encoding(void)
 	char data_to_encode2[] = "test string 12345 RaNDommmmm cAsinggg";
 	char data_to_encode3[] = "Just gonna stand there and watch me cry";
 	char data_to_encode4[] = "Dec 11 04:05:45 vishal-Lenovo-ideapad-520S-14";
+	char data_to_encode5[] = "Dec 11 04:09:45 vishal-Lenovo-ideapad-520S-14IKB org.gnome.Shell.desktop[2145]: #0 0x7ffed15c99d0 I   resource:///org/gnome/gjs/modules/";
 
 	printf("%s",data_to_encode1);//syswrite test
 	printf("%s",data_to_encode2);//syswrite test
 	printf("%s",data_to_encode3);//syswrite test
 	printf("%s",data_to_encode4);//syswrite test
+	printf("%s",data_to_encode5);//syswrite test
 
 }
 

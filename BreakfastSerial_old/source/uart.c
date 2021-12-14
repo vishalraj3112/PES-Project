@@ -145,8 +145,14 @@ int __sys_write(int handle, char * buf, int size){
 
 	size_idx = (enc_bits >> 3) + 1;//should be 14 currently
 
-	enc_buff[size_idx] = enc_bits;//should be 109 currently or 0x6D
-	enc_buff[size_idx + 1] = 0xFF;//entering special end of string token
+	if(enc_bits > 0xFF){
+		enc_buff[size_idx] = enc_bits & 0x00FF;
+		enc_buff[size_idx + 1] = (enc_bits>>8) & 0x00FF;
+		enc_buff[size_idx + 2] = 0xFF;
+	}else{
+		enc_buff[size_idx] = enc_bits;//should be 109 currently or 0x6D
+		enc_buff[size_idx + 1] = 0xFF;//entering special end of string token
+	}
 
 	while(cbfifo_length(tx_fifo) == cbfifo_capacity(tx_fifo))//if tx_buff full wait
 		;

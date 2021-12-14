@@ -9,11 +9,11 @@ The lookup-table has been generated from Linux Syslog.
 
 Uart parameters:Baud rate : 38400bps, Data bits : 8, Parity : N, Stop Bits : 2.
 
-# To generate the lookup tree for a given input, input the data in "input.txt". Then run the program by building huffman_tree_gen.c and output the executable data to huffman.h by the following command:
+To generate the lookup tree for a given input, input the data in "input.txt". Then run the program by building huffman_tree_gen.c and output the executable data to huffman.h by the following command:
 Suppose, the name of the executable is huffman.exe, command will be:
 ./huffman.exe > huffman.h.
 
-# To run the actual compression and decompression program,
+# To run the actual compression and decompression program:
 1.open the project PES-Project on MCU-Xpresso and enter in debugging.
 2.Open the PC side program and edit the line number 46 with the actual COM port number assigned.
 3.Build the PC side program serial_read.c

@@ -8,12 +8,14 @@
 #include "huff.h"
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
 
 #define MASK(x)     (0xFF >> (8-x))
 
 static void decode_string(uint8_t encoded_buffer[], uint16_t encoded_bits, uint8_t decoded_buffer[]);
 static int min(int a,int b);
 static void test_syswrite_encoding(void);
+static void test_huffman_encode_decode(void);
 
 int encoded_bits = 0;
 
@@ -22,36 +24,7 @@ void huffman(void)
 
 	test_syswrite_encoding();
 
-	uint8_t decodedstring[200] = {0};
-
-	char data_to_encode[] = "entering a random strin";
-//
-//	printf("%s",data_to_encode);//syswrite test
-
-	uint8_t buff[1024];
-
-	//encoding
-	uint16_t indexes = encode_string(data_to_encode, buff, sizeof(buff));//string encoded here
-
-	//print the encoded buffer
-	for(int i = 0; i < 14; i++){//105 = 13.125 bits
-		//printf("buff[%d]:%x\r\n",i,buff[i]);
-		printf("%x",buff[i]);
-	}
-	printf("\r\n");
-	printf("encoded bits:%d\r\n",indexes);
-
-	//decoding
-	decode_string(buff, indexes, decodedstring);
-
-	printf("\n%s\r\n", decodedstring);
-
-	if(!strncmp((char *)data_to_encode,(char *)decodedstring,strlen(data_to_encode))){
-		printf("Encode = decode\r\n");
-	}else
-		printf("Fail!\r\n");
-
-	//Now send the encoded string over UART
+	test_huffman_encode_decode();//Kl25 encode-decode test
 
 }
 
@@ -68,6 +41,49 @@ void test_syswrite_encoding(void)
 	printf("%s",data_to_encode3);//syswrite test
 	printf("%s",data_to_encode4);//syswrite test
 	printf("%s",data_to_encode5);//syswrite test
+
+}
+
+void test_huffman_encode_decode(void)
+{
+    uint8_t decodedstring[200] = {0};
+
+    char data_to_encode[] = "Dec 11 04:05:45 vishal-Lenovo-ideapad-520S-14IKB rsyslogd:";
+    char data_to_encode2[] = "Just gonna stand there and watch me burn Well, that's alright, because I like the way it hurts Just gonna stand there and hear me cry";
+    char data_to_encode3[] = "Entering a random string";
+    char data_to_encode4[] = "test string 12345 RaNDommmmm cAsinggg";
+
+    uint8_t buff[100];
+
+    //test for input - 1
+    uint16_t indexes = encode_string(data_to_encode, buff, sizeof(buff));//string encoded here
+    decode_string(buff, indexes, decodedstring);
+    assert(!strncmp((char*)data_to_encode,(char*)decodedstring,strlen(data_to_encode)));
+    memset(buff, 0, sizeof(buff));
+    memset(decodedstring,0,sizeof(decodedstring));
+
+    //test for input - 2
+    indexes = encode_string(data_to_encode2, buff, sizeof(buff));//string encoded here
+    decode_string(buff, indexes, decodedstring);
+    assert(!strncmp((char*)data_to_encode2,(char*)decodedstring,strlen(data_to_encode2)));
+    memset(buff, 0, sizeof(buff));
+    memset(decodedstring,0,sizeof(decodedstring));
+
+    //test for input - 3
+    indexes = encode_string(data_to_encode3, buff, sizeof(buff));//string encoded here
+    decode_string(buff, indexes, decodedstring);
+    assert(!strncmp((char*)data_to_encode3,(char*)decodedstring,strlen(data_to_encode3)));
+    memset(buff, 0, sizeof(buff));
+    memset(decodedstring,0,sizeof(decodedstring));
+
+    //test for input - 4
+    indexes = encode_string(data_to_encode4, buff, sizeof(buff));//string encoded here
+    decode_string(buff, indexes, decodedstring);
+    assert(!strncmp((char*)data_to_encode4,(char*)decodedstring,strlen(data_to_encode4)));
+
+
+    printf("\r\n");
+    printf("All KL25Z encode-decode tests passed!\r\n");
 
 }
 

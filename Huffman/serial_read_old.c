@@ -327,3 +327,4 @@ void decode_string(uint8_t enc_buff[], uint16_t enc_bits, uint8_t dec_buff[])
     }
     dec_buff[dec_idx] = '\0';
 }
+

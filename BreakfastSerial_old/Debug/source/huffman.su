@@ -1,5 +1,6 @@
-huffman.c:20:6:huffman	1272	static
-huffman.c:58:6:test_syswrite_encoding	320	static
-huffman.c:74:5:encode_string	64	static
-huffman.c:123:5:min	16	static
-huffman.c:128:6:decode_string	48	static
+huffman.c:22:6:huffman	8	static
+huffman.c:31:6:test_syswrite_encoding	320	static
+huffman.c:47:6:test_huffman_encode_decode	584	static
+huffman.c:90:5:encode_string	64	static
+huffman.c:139:5:min	16	static
+huffman.c:144:6:decode_string	48	static

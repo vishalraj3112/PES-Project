@@ -1,45 +1,49 @@
-// C program for Huffman Coding
+/***********************************************************************************************************************
+* File Name    : huffman_tree_gen.c
+* Project      : PES Final Project
+* Version      : 1.0
+* Description  : Contains the huffman tree and look-up table generation code for huffman algorithm.
+* Author       : Vishal Raj & referred from https://www.geeksforgeeks.org/huffman-coding-greedy-algo-3/.
+* Creation Date: 12.09.21
+***********************************************************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-//#include <math.h>  
-//#include "huffman.h"
+//#include "huffman_tree_gen.h" //using internally generated look-up table in this code
 #include <assert.h>
 
-// This constant can be avoided by explicitly
-// calculating height of Huffman Tree
-#define MAX_TREE_HT 100
-#define MAX_CHAR    128
-#define MASK(x)     (0xFF >> (8-x))
+//MACROS
+#define TREE_HEIGHT     100   
+#define TOTAL_CHARS     128           
+#define MASK(x)         (0xFF >> (8-x))
 
 int encoded_bits = 0;
   
-// A Huffman tree node
-struct MinHeapNode {
+//Huffman tree node
+struct tree_node {
   
-    // One of the input characters
+    //data at the node
     char data;
   
-    // Frequency of the character
+    // Frequency of the data
     unsigned freq;
   
     // Left and right child of this node
-    struct MinHeapNode *left, *right;
+    struct tree_node *left, *right;
 };
   
-// A Min Heap:  Collection of
-// min-heap (or Huffman tree) nodes
-struct MinHeap {
+//collection of tree_nodes
+struct Tree_heap {
   
-    // Current size of min heap
+    // Heap size
     unsigned size;
   
-    // capacity of min heap
+    // Heap capacity
     unsigned capacity;
   
-    // Array of minheap node pointers
-    struct MinHeapNode** array;
+    // array of tree_heap pointers
+    struct tree_node** array;
 };
 
 //***tree generation struct
@@ -50,12 +54,11 @@ struct MinHeap {
      int32_t freq;       //frequency of data
  }huffman_table_t;
 
-huffman_table_t huffman_table[MAX_CHAR] = {{.data = 'x', .ccode = 0, .no_bits = 0}};
+huffman_table_t huffman_table[TOTAL_CHARS] = {{.data = 'x', .ccode = 0, .no_bits = 0}};
 //***tree generation struct
 
 static void printFreq(int freq[],char arr[], int freq_new[]);
 static int getFrequency(uint8_t string[]);
-static void decode_file(struct MinHeapNode* root, uint8_t *s, uint8_t *decode);
 static int encode_string(char *message, uint8_t *buffer, size_t nbytes);
 static void gen_huffman_header(void);
 static void print_lut(void);
@@ -71,10 +74,9 @@ char encoded_string[100] = {0};
 // A utility function allocate a new
 // min heap node with given character
 // and frequency of the character
-struct MinHeapNode* newNode(char data, unsigned freq)//l:231
+struct tree_node* gen_node(char data, unsigned freq)//l:231
 {
-    struct MinHeapNode* temp = (struct MinHeapNode*)malloc(
-        sizeof(struct MinHeapNode));
+    struct tree_node* temp = (struct tree_node*)malloc(sizeof(struct tree_node));
   
     temp->left = temp->right = NULL;
     temp->data = data;
@@ -85,129 +87,108 @@ struct MinHeapNode* newNode(char data, unsigned freq)//l:231
   
 // A utility function to create
 // a min heap of given capacity
-struct MinHeap* createMinHeap(unsigned capacity)
+struct Tree_heap* createTree_heap(unsigned capacity)
   
 {
+    struct Tree_heap* new_heap = (struct Tree_heap*)malloc(sizeof(struct Tree_heap));
   
-    struct MinHeap* minHeap
-        = (struct MinHeap*)malloc(sizeof(struct MinHeap));
+    new_heap->size = 0;
   
-    // current size is 0
-    minHeap->size = 0;
+    new_heap->capacity = capacity;
   
-    minHeap->capacity = capacity;
-  
-    minHeap->array = (struct MinHeapNode**)malloc(
-        minHeap->capacity * sizeof(struct MinHeapNode*));
-    return minHeap;
+    new_heap->array = (struct tree_node**)malloc(new_heap->capacity * sizeof(struct tree_node*));
+
+    return new_heap;
 }
   
 // A utility function to
 // swap two min heap nodes
-void swapMinHeapNode(struct MinHeapNode** a,
-                     struct MinHeapNode** b)
+void swap_nodes(struct tree_node** x,struct tree_node** y)
   
 {
   
-    struct MinHeapNode* t = *a;
-    *a = *b;
-    *b = t;
+    struct tree_node* temp = *y;
+
+    *y = *x;
+    *x = temp;
 }
   
-// The standard minHeapify function.
-void minHeapify(struct MinHeap* minHeap, int idx)
+// The standard gen_heap function.
+void gen_heap(struct Tree_heap* heap, int idx)
   
-{
-  
+{ 
     int smallest = idx;
     int left = 2 * idx + 1;
     int right = 2 * idx + 2;
   
-    if (left < minHeap->size
-        && minHeap->array[left]->freq
-               < minHeap->array[smallest]->freq)
+    if (left < heap->size && (heap->array[left]->freq < heap->array[smallest]->freq))
         smallest = left;
   
-    if (right < minHeap->size
-        && minHeap->array[right]->freq
-               < minHeap->array[smallest]->freq)
+    if (right < heap->size && (heap->array[right]->freq < heap->array[smallest]->freq))
         smallest = right;
   
     if (smallest != idx) {
-        swapMinHeapNode(&minHeap->array[smallest],
-                        &minHeap->array[idx]);
-        minHeapify(minHeap, smallest);
+        swap_nodes(&heap->array[smallest],&heap->array[idx]);
+        gen_heap(heap, smallest);
     }
 }
   
 // A utility function to check
 // if size of heap is 1 or not
-int isSizeOne(struct MinHeap* minHeap)//l:216
+int check_heap_one(struct Tree_heap* heap)//l:216
 {
   
-    return (minHeap->size == 1);
+    return (heap->size == 1);
 }
   
 // A standard function to extract
 // minimum value node from heap
-struct MinHeapNode* extractMin(struct MinHeap* minHeap)//l:220,221
+struct tree_node* get_min_node(struct Tree_heap* heap)//l:220,221
   
 {
   
-    struct MinHeapNode* temp = minHeap->array[0];
-    minHeap->array[0] = minHeap->array[minHeap->size - 1];
+    struct tree_node* temp = heap->array[0];
+    heap->array[0] = heap->array[heap->size - 1];
   
-    --minHeap->size;
-    minHeapify(minHeap, 0);
+    --heap->size;
+    gen_heap(heap, 0);
   
     return temp;
 }
   
 // A utility function to insert
 // a new node to Min Heap
-void insertMinHeap(struct MinHeap* minHeap,
-                   struct MinHeapNode* minHeapNode)//l:236
-  
+void insert_node(struct Tree_heap* heap, struct tree_node* node)//l:236
 {
   
-    ++minHeap->size;
-    int i = minHeap->size - 1;
+    ++heap->size;
+    int i = heap->size - 1;
   
     while (i
-           && minHeapNode->freq
-                  < minHeap->array[(i - 1) / 2]->freq) {
+           && node->freq
+                  < heap->array[(i - 1) / 2]->freq) {
   
-        minHeap->array[i] = minHeap->array[(i - 1) / 2];
+        heap->array[i] = heap->array[(i - 1) / 2];
         i = (i - 1) / 2;
     }
   
-    minHeap->array[i] = minHeapNode;
+    heap->array[i] = node;
 }
   
 // A standard function to build min heap
-void buildMinHeap(struct MinHeap* minHeap)
-  
+void build_heap(struct Tree_heap* heap)
 {
   
-    int n = minHeap->size - 1;
+    int n = heap->size - 1;
     int i;
   
     for (i = (n - 1) / 2; i >= 0; --i)
-        minHeapify(minHeap, i);
+        gen_heap(heap, i);
 }
-  
-// A utility function to print an array of size n
-void printArr(int arr[], int n)
-{
-    int i;
-    for (i = 0; i < n; ++i)
-        printf("%d", arr[i]);
-  
-    printf("\n");
-}
+
   
 // Utility function to check if this node is leaf
-int isLeaf(struct MinHeapNode* root)
+int isLeaf(struct tree_node* root)
   
 {
   
@@ -218,91 +199,68 @@ int isLeaf(struct MinHeapNode* root)
 // equal to size and inserts all character of
 // data[] in min heap. Initially size of
 // min heap is equal to capacity
-struct MinHeap* createAndBuildMinHeap(char data[],
-                                      int freq[], int size)
+struct Tree_heap* build_tree_heap(char data[], int freq[], int size)
   
 {
   
-    struct MinHeap* minHeap = createMinHeap(size);
+    struct Tree_heap* heap = createTree_heap(size);
   
     for (int i = 0; i < size; ++i)
-        minHeap->array[i] = newNode(data[i], freq[i]);
+        heap->array[i] = gen_node(data[i], freq[i]);
   
-    minHeap->size = size;
-    buildMinHeap(minHeap);
+    heap->size = size;
+    build_heap(heap);
   
-    return minHeap;
+    return heap;
 }
   
 // The main function that builds Huffman tree
-struct MinHeapNode* buildHuffmanTree(char data[],
-                                     int freq[], int size)
+struct tree_node* gen_huffman_tree(char data[], int freq[], int size)
   
 {
-    struct MinHeapNode *left, *right, *top;
+    struct tree_node *left, *right, *top;
   
-    // Step 1: Create a min heap of capacity
-    // equal to size.  Initially, there are
-    // modes equal to size.
-    struct MinHeap* minHeap
-        = createAndBuildMinHeap(data, freq, size);
+
+    struct Tree_heap* heap = build_tree_heap(data, freq, size);
   
-    // Iterate while size of heap doesn't become 1
-    while (!isSizeOne(minHeap)) {
+    // Continue to genrate until size of heap becomes one
+    while (!check_heap_one(heap)) {
   
-        // Step 2: Extract the two minimum
-        // freq items from min heap
-        left = extractMin(minHeap);
-        right = extractMin(minHeap);
+        left = get_min_node(heap);
+        right = get_min_node(heap);
   
-        // Step 3:  Create a new internal
-        // node with frequency equal to the
-        // sum of the two nodes frequencies.
-        // Make the two extracted node as
-        // left and right children of this new node.
-        // Add this node to the min heap
-        // '$' is a special value for internal nodes, not
-        // used
-        top = newNode('$', left->freq + right->freq);
+        top = gen_node('$', left->freq + right->freq);
   
         top->left = left;
         top->right = right;
   
-        insertMinHeap(minHeap, top);
+        insert_node(heap, top);
     }
   
-    // Step 4: The remaining node is the
-    // root node and the tree is complete.
-    return extractMin(minHeap);
+
+    return get_min_node(heap);
 }
   
 // Prints huffman codes from the root of Huffman Tree.
 // It uses arr[] to store codes
-void printCodes(struct MinHeapNode* root, int arr[],
-                int top)
+void store_char_codes(struct tree_node* root, int arr[], int top)
   
 {
-    // Assign 0 to left edge and recur
+    //assign 0 to left node
     if (root->left) {
         arr[top] = 0;
-        printCodes(root->left, arr, top + 1);
+        store_char_codes(root->left, arr, top + 1);
     }
   
-    // Assign 1 to right edge and recur
+    // assign 1 to right node
     if (root->right) {
-  
         arr[top] = 1;
-        printCodes(root->right, arr, top + 1);
+        store_char_codes(root->right, arr, top + 1);
     }
   
-    // If this is a leaf node, then
-    // it contains one of the input
-    // characters, print the character
-    // and its code from arr[]
+    /*if a node end is reached store the value in huffman
+    lookup table*/
     if (isLeaf(root)) {
-  
-        //printf("%c: ", root->data);
-        //printArr(arr, top);
         huffman_table[root->data].data = root->data;
         huffman_table[root->data].no_bits = top;
         store_data(root->data,arr,top);
@@ -314,17 +272,9 @@ void store_data(char data, int arr[],int no_bits)
     uint32_t temp = 0;
     for(int i = 0; i < no_bits; i++){
             if(arr[i] == 1)
-                temp += (1<< (no_bits-1-i));
-                //huffman_table[data].ccode += (1<< (no_bits-1-i));
-    }  
-    //printf("temp:%d ",temp);  
+                temp += (1 << (no_bits-1-i));
+    }   
     huffman_table[data].ccode = temp;
-    // for(int i = 0; i < no_bits; i++){
-    //     if(arr[i] == 1)
-    //         temp += (1<< (i));
-    // }
-    // printf("temp:%d ",temp);  
-    // huffman_table[data].ccode = temp;
 }
 
 
@@ -381,18 +331,15 @@ int encode_string(char *message, uint8_t *buffer, size_t nbytes)
 // The main function that builds a
 // Huffman Tree and print codes by traversing
 // the built Huffman Tree
-struct MinHeapNode* HuffmanCodes(char data[], int freq[], int size)
+struct tree_node* gen_huffman_codes(char data[], int freq[], int size)
   
 {
-    // Construct Huffman Tree
-    struct MinHeapNode* root
-        = buildHuffmanTree(data, freq, size);
+    // Generate tree
+    struct tree_node* root = gen_huffman_tree(data, freq, size);
   
-    // Print Huffman codes using
-    // the Huffman tree built above
-    int arr[MAX_TREE_HT], top = 0;
+    int arr[TREE_HEIGHT], top = 0;
   
-    printCodes(root, arr, top);
+    store_char_codes(root, arr, top);
 
     return root;
 }
@@ -404,7 +351,7 @@ int main()
     long files_bytes = 0;
     int ctr = 0;
     
-    //***File read
+    //***File read begins
     char * filename = "input2.txt";
     FILE *fp = fopen(filename,"r");
 
@@ -428,21 +375,8 @@ int main()
 
     fread(string,sizeof(char),files_bytes,fp);
     fclose(fp);
-    printf("File data:");
-    //printf("%s\r\n",string);
 
-    /*free allocated memory*/
-    //free(string);
-
-    // const uint32_t MAX_LEN = 256;
-    // char buffer[MAX_LEN];
-
-    // printf("File data:");
-    // while(fgets(string,MAX_LEN,fp));
-    //     printf("%s\r\n",string);
-
-    // fclose(fp);
-    //***File read
+    //***File read ends
 
     int size = getFrequency(string);
     char arr[size];
@@ -455,9 +389,9 @@ int main()
         }
     }
   
-    struct MinHeapNode* root;
+    struct tree_node* root;
 
-    root = HuffmanCodes(arr, freq, size);//generating huffman tree here
+    root = gen_huffman_codes(arr, freq, size);//generating huffman tree here
     //----tree generation over here
     print_lut();
     //gen_huffman_header();
@@ -483,12 +417,7 @@ void test_huffman_encode_decode(void)
 
     //test for input - 1
     uint16_t indexes = encode_string(data_to_encode, buff, sizeof(buff));//string encoded here
-    printf("index:%d",indexes );
-
-    for(int i = 0 ;i <sizeof(buff); i++)
-    {
-        printf("buf[%d]:%x\r\n",i,buff[i]);
-    }
+    //printf("index:%d",indexes );
 
     decode_string(buff, indexes, decodedstring);
 
@@ -556,8 +485,8 @@ void gen_huffman_header(void)
     printf("typedef struct {\n\tuint8_t data;\n\tuint32_t ccode;\n\tint32_t no_bits;\n\tint32_t freq;\n} huffman_table_t;\n\n");
 
     printf("huffman_table_t huffman_table[] = {\n");
-    for (int i = 0; i < MAX_CHAR; i++) {
-        if (i != MAX_CHAR-1)
+    for (int i = 0; i < TOTAL_CHARS; i++) {
+        if (i != TOTAL_CHARS-1)
             printf("{%d, 0x%02x, %d},\n", huffman_table[i].data, huffman_table[i].ccode, huffman_table[i].no_bits);//Check %02x !!
         else
             printf("{%d, 0x%02x, %d} };\n\n", huffman_table[i].data, huffman_table[i].ccode, huffman_table[i].no_bits);
@@ -568,9 +497,10 @@ void gen_huffman_header(void)
 
 void print_lut(void)
 {
+    printf("Huffman Lookup table below:\r\n");
     printf("huffman_table_t huffman_table[] = {\n");
-    for (int i = 0; i < MAX_CHAR; i++) {
-        if (i != MAX_CHAR-1)
+    for (int i = 0; i < TOTAL_CHARS; i++) {
+        if (i != TOTAL_CHARS-1)
             printf("{%d, 0x%02x, %d},\n", huffman_table[i].data, (huffman_table[i].ccode), huffman_table[i].no_bits);//Check %02x !!
         else
             printf("{%d, 0x%02x, %d} };\n\n", huffman_table[i].data, (huffman_table[i].ccode), huffman_table[i].no_bits);
@@ -596,43 +526,6 @@ int getFrequency(uint8_t string[])
 
     return cnt;
 }
-
-void decode_file(struct MinHeapNode* root, uint8_t *s, uint8_t *decode)
-{
-    int j = 0;
-    int decoded_bits = 0;
-    struct MinHeapNode* curr = root;
-
-    // int temp = (encoded_bits & 7);
-    // printf("Encoded_bits %d\n", (encoded_bits >> 3 + 1));
-    for (int i = 0; i < (encoded_bits >> 3) + 1; i++)
-    {
-        int bit = 8;
-        while(bit){
-            if ((s[i] & 0x80) == 0)
-            //if (s[i] == '0')
-                curr = curr->left;
-            else
-                curr = curr->right;
-            s[i] <<= 1;
-            bit--;
-            
-            // reached leaf node
-            if (curr->left==NULL && curr->right==NULL)
-            {
-                decode[j++] = curr->data;
-                //printf("%c", curr->data);
-                curr = root;
-            }
-
-            decoded_bits++;
-            if (decoded_bits == encoded_bits)
-                break;
-        }
-    }
-    decode[j]='\0';
-}
-
 
 void decode_string(uint8_t enc_buff[], uint16_t enc_bits, uint8_t dec_buff[])
 {

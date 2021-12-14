@@ -4,10 +4,11 @@
 #include <string.h>
 #include <stdint.h>
 #include "huffman.h"
+#include <assert.h>
 
 static uint8_t string_to_hex(char array[]);
 static void decode_string(uint8_t enc_buff[], uint16_t enc_bits, uint8_t dec_buff[]);
-static void test_decoded_data(uint8_t decoded_string[]);
+static void test_decoded_data(uint8_t decoded_string[], uint8_t input_no);
 
 int main()
 {
@@ -81,7 +82,7 @@ int main()
         uint8_t temp[3] = {0}, num = 0, buff_2[200] = {0}, enc_buff[100] = {0};
         uint16_t idx = 0;
         int length = 0, prev_i = 0;
-        uint8_t decodedstring[200] = {0};
+        uint8_t decodedstring[200] = {0}, input_no = 1;
 
         i = 0;
 
@@ -125,10 +126,11 @@ int main()
 
                     decode_string(enc_buff, idx, decodedstring);
 
-                    printf("%s\r\n", decodedstring);
+                    printf("\n%s\r\n", decodedstring);
 
-                    test_decoded_data(decodedstring);
-
+                    test_decoded_data(decodedstring,input_no);
+                    input_no++;
+                    printf("input_no:%d\n",input_no);
                 }                   
 
                 //break;
@@ -202,14 +204,56 @@ exit:
 //     } 
 // }
 
-void test_decoded_data(uint8_t decoded_string[])
-{
-    char data_sent[] = "entering a random strin";
+bool tests_passed = true;
 
-    if(!strncmp(data_sent,decoded_string,strlen(data_sent))){
-		printf("Encode = decode\r\n");
-	}else
-		printf("Fail!\r\n");
+void test_decoded_data(uint8_t decoded_string[], uint8_t input_no)
+{
+    char data_sent_1[] = "entering a random strin";
+    char data_sent_2[] = "test string 12345 RaNDommmmm cAsinggg";
+    char data_sent_3[] = "Just gonna stand there and watch me cry";
+    char data_sent_4[] = "Dec 11 04:05:45 vishal-Lenovo-ideapad-520S-14";
+
+    if(input_no == 1){
+
+        assert(!strncmp(data_sent_1,decoded_string,strlen(data_sent_1)));
+        if(!strncmp(data_sent_1,decoded_string,strlen(data_sent_1)))
+		  printf("Test 1 passed!\r\n");
+	    else{
+		  printf("Fail!\r\n");
+          tests_passed = false;
+        }
+    }else if(input_no == 2){
+
+        assert(!strncmp(data_sent_2,decoded_string,strlen(data_sent_2)));
+        if(!strncmp(data_sent_2,decoded_string,strlen(data_sent_2)))
+          printf("Test 2 passed!\r\n");
+        else{
+          printf("Failed test 2!\r\n");
+          tests_passed = false;
+        }
+    }else if(input_no == 3){
+
+        assert(!strncmp(data_sent_3,decoded_string,strlen(data_sent_3)));
+        if(!strncmp(data_sent_3,decoded_string,strlen(data_sent_3)))
+          printf("Test 3 passed!\r\n");
+        else{
+          printf("Failed test 3!\r\n");
+          tests_passed = false;
+        }
+    }
+    else if(input_no == 4){
+
+        assert(!strncmp(data_sent_4,decoded_string,strlen(data_sent_4)));
+        if(!strncmp(data_sent_4,decoded_string,strlen(data_sent_4)))
+          printf("Test 4 passed!\r\n");
+        else{
+          printf("Failed test 4!\r\n");
+          tests_passed = false;
+        }
+    }
+
+    if((tests_passed == true) && (input_no == 4))
+        printf("\nAll PC decode tests passed!\r\n");
 
     printf("\r\n");
 }

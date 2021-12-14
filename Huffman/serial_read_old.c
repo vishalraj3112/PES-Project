@@ -12,6 +12,9 @@ static void test_decoded_data(uint8_t decoded_string[], uint8_t input_no);
 
 int main()
 {
+
+    printf("Waiting for encoded inputs from target controller...\r\n");
+
     HANDLE hComm;
     DCB dcbParams = { 0 };
     char buffer[200] = {0};
@@ -55,7 +58,6 @@ int main()
         goto exit;
     }
 
-
    while(1){
    
         //Read data and store in a buffer
@@ -90,11 +92,9 @@ int main()
 
             num = buffer[i];
             buff_2[i] = num;
-            printf("buf[%d]:%x\r\n",i,num);
+            //printf("buf[%d]:%x\r\n",i,num);
 
             if(num == 0xff){
-
-                printf("Token!\r\n");
 
                 //extract_enc_string(buff_2,i);
                 length = i - prev_i;
@@ -102,7 +102,6 @@ int main()
                 if((length > 0) && (length <= 32)){//255 data bytes + 1 size byte
                     idx = buff_2[i-1];
                 }else{
-                    printf("Here!\r\n");
                     idx = buff_2[i-2];//Lower nibble
                     uint16_t shift_temp = buff_2[i-1];
                     idx |= shift_temp << 8;
@@ -111,7 +110,7 @@ int main()
                 prev_i = i;
 
                 if(idx){ //if there is some size in input string
-                    printf("size bits:%d\r\n",idx);
+                    //printf("size bits:%d\r\n",idx);
 
                     //decoding
                     uint16_t start = 0;
@@ -120,22 +119,26 @@ int main()
                     else
                         start = i - length;
 
-                    printf("start:%d ",start);
-
                     uint16_t upto = length - 1;
-                    printf("upto:%d \n",upto);
 
                     memcpy(enc_buff, (buff_2 + start), upto);
-                    for(int k=0;k<length;k++)
-                        printf("enc_buff[%d]:%x ",k,enc_buff[k]);
+                    printf("encoded string dump:(hex)\n\r");
+                    for(int k=0;k<length;k++){//dump of encoded string
+                        
+                        if((k == 0) || (k%16 == 0))
+                            printf("\r\n");
+                        
+                        //printf("enc_buff[%d]:%x\r\n",k,enc_buff[k]);
+                        printf("%02x ",enc_buff[k]);
+                    }
 
                     decode_string(enc_buff, idx, decodedstring);
 
-                    printf("\n%s\r\n", decodedstring);
+                    printf("\n\nDecoded string:\n%s\r\n\n", decodedstring);
 
                     test_decoded_data(decodedstring,input_no);
                     input_no++;
-                    printf("input_no:%d\n",input_no);
+                    printf("--------------------------------------------------------------------------------------------\n");
                 }                   
 
                 //break;
@@ -180,34 +183,6 @@ exit:
 
   return 0;
 }
-
-// int prev_i = 0;
-
-// void extract_enc_string(uint8_t buff_2,int i){
-
-//     uint16_t idx = 0;
-
-//     if((i > 0) && (i <= 256)){//255 data bytes + 1 size byte
-//         idx = buff_2[i-1];
-//     }
-    
-
-//     if(idx){ //if there is some size in input string
-//         printf("size bits:%d\r\n",idx);
-//         printf("\n");
-
-
-//         uint8_t decodedstring[200] = {0};
-
-//         //decoding
-//         decode_string(buff_2, idx, decodedstring);
-
-//         printf("\n%s\r\n", decodedstring);
-
-//         test_decoded_data(decodedstring);
-
-//     } 
-// }
 
 bool tests_passed = true;
 
@@ -268,8 +243,11 @@ void test_decoded_data(uint8_t decoded_string[], uint8_t input_no)
         }
     }
 
-    if((tests_passed == true) && (input_no == 5))
-        printf("\nAll PC decode tests passed!\r\n");
+    if((tests_passed == true) && (input_no == 5)){
+        printf("\n---------------------------------\n");
+        printf("   All PC decode tests passed!\r\n");
+        printf("---------------------------------\r\n");
+    }
 
     printf("\r\n");
 }

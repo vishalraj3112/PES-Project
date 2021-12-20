@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdint.h>
 //#include "huffman_tree_gen.h" //using internally generated look-up table in this code
+#include "huffman_py_head.h" //header generated from the python script
 #include <assert.h>
 
 //MACROS
@@ -47,14 +48,14 @@ struct Tree_heap {
 };
 
 //***tree generation struct
- typedef struct{
-    uint8_t data;       //Data being coded
-     uint32_t ccode;     //Character code for data
-     int32_t no_bits;    //Number of bits in char code
-     int32_t freq;       //frequency of data
- }huffman_table_t;
+//  typedef struct{
+//     uint8_t data;       //Data being coded
+//      uint32_t ccode;     //Character code for data
+//      int32_t no_bits;    //Number of bits in char code
+//      int32_t freq;       //frequency of data
+//  }huffman_table_t;
 
-huffman_table_t huffman_table[TOTAL_CHARS] = {{.data = 'x', .ccode = 0, .no_bits = 0}};
+// huffman_table_t huffman_table[TOTAL_CHARS] = {{.data = 'x', .ccode = 0, .no_bits = 0}};
 //***tree generation struct
 
 static void printFreq(int freq[],char arr[], int freq_new[]);
@@ -381,7 +382,7 @@ int main()
     root = gen_huffman_codes(arr, freq, size);//generating huffman tree here
     //----tree generation over here
     //print_lut();
-    gen_huffman_header();
+    //gen_huffman_header();
 
     test_huffman_encode_decode();
 

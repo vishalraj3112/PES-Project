@@ -1,15 +1,4 @@
-#******************************************************************************************
-# @file    :   huffman_encode.py
-# @brief   :   Code for generating huffman tree from an input file which is taken from Linux 
-#              Syslog file.
-# @author  :   Vishal Raj
-# @date    :   December 11, 2021
-# @version :   1.0
-#
-# @tools   :   python3
-#
-# @link    :   Code referred from https://www.programiz.com/dsa/huffman-coding.
-#*****************************************************************************************
+# Huffman Coding in python
 
 #open file in read mode
 data_file = open("input2.txt","r")
@@ -23,7 +12,10 @@ data_file.close()
 #print the file data
 #print(data)
 
-#loading the file string
+#string = 'BCAADDDCCACACAC'
+string = "geeksforgeeks"
+
+#overlapping the small string
 string = data
 
 # Creating tree nodes
@@ -43,16 +35,7 @@ class NodeTree(object):
         return '%s_%s' % (self.left, self.right)
 
 
-#*********************************************************************************
-# * @function:   huffman_code_tree
-# *
-# * @brief   :   The main function implementing huffman coding.
-# *
-# * @param   :   The tree nodes, direction of growth(left or right), binString of
-# *          :   of character codes.
-# *
-# * @return  :   dictionary of huffman tree nodes.
-#**********************************************************************************
+# Main function implementing huffman coding
 def huffman_code_tree(node, left=True, binString=''):
     if type(node) is str:
         return {node: binString}
@@ -75,6 +58,8 @@ freq = sorted(freq.items(), key=lambda x: x[1], reverse=True)
 
 nodes = freq
 
+#print("length:%d\n"%len(nodes))
+
 no_of_nodes = len(nodes)
 
 while len(nodes) > 1:
@@ -92,16 +77,16 @@ lst = []
 matrix = [[]]
 matrix_bits = [[]]
 
+#matrix = [[0 for i in range(10)] for i in range(20)]#row, Col
+#matrix = [0 for i in range(no_of_nodes)]
+#matrix_bits = [0 for i in range(no_of_nodes)]
 matrix = [0 for i in range(128)]
 matrix_bits = [0 for i in range(128)]
 
-#variables needed for iteration.
 i = 0
 j = 0
 bits_cnt = 0
 
-
-#From this point, the C header file is generated.
 print('#ifndef _HUFFMAN_H_')
 print('#define _HUFFMAN_H_\n\n')
 print('#include<stdint.h>')
@@ -114,27 +99,40 @@ print('huffman_table_t huffman_table[] = {')
 for x in huffmanCode:
     word = huffmanCode[x]
     lst = list(word)
+    #print(lst)
     lst.reverse() #reversing for reading LSB first
     for y in lst:
         if y == '1':
             matrix[ord(x)] += pow(2,j) #store in ascii location
             bits_cnt = j + 1 
+        #else: 
+            #print('0')
         j += 1
+    #print("mat:")
+    #print(matrix)
+    #print("\n")
     matrix_bits[ord(x)] = bits_cnt
     i += 1
     j = 0
     bits_cnt = 0
 
+#print("Matrix")
+#print(matrix)
+
+#print(word)
+#print(lst)
 
 array_bits = []
 
+#matrix.reverse()
+#huffmanCode.reverse()
 i = 0
-
-#Code for generating the huffman tree Look-up table in the C header file. 
+#for (char, frequency) in freq:
+#->for x in huffmanCode:
+#    print('{%-4r, 0x%x, %d},' % (x, int(matrix[i]), matrix_bits[i]))
+#    i += 1
 for x in range(128):
     print('\t{%d, 0x%x, %d},'% (x , matrix[x], matrix_bits[x]))
 
 print('\t};')
 print("\n#endif")
-
-#[EOF]

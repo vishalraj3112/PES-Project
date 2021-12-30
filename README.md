@@ -16,7 +16,7 @@ Suppose, the name of the executable is huffman.exe, command will be:
 
 # To run the actual compression and decompression program:
 1.open the project PES-Project on MCU-Xpresso and enter in debugging.<br />
-2.Open the PC side program and edit the line number 46 with the actual COM port number assigned.<br />
+2.Open the PC side program and edit the line number 46 in Huffman/serial_read.c with the actual COM port number assigned.<br />
 3.Build the PC side program serial_read.c.<br />
 4.Run the PC side program and it should print 'Waiting for encoded input from target controller'.<br />
 5.At this point, run the KL-25Z program.<br />
@@ -34,4 +34,4 @@ To run the project- Clone this repository in your local drive.Import the project
 2. Cmocka unit test framework has been used to test the huffman encoding and decoding algorithm on the PC side. Two test function with multiple string inputs are used for testing. The advantage of using such a test framework is that it provides a nice GUI of the testing process. The program does not abort on a segfault or an assertion failure and continues to run until all tests are completed. The framework provides many other functionalities for testing and also some mocking functions inbuilt, which can directly be used and will save time during development.<br />
 3. 'makefile' has been used in cmocka folder to build the test program.<br />
 4. GDB debugger used for debgging the huffman encode, decode algorithm.<br />
-5. Win32 API used for reading serial port data on the PC(in serial_read.c).
+5. Win32 API used for reading serial port data on the PC(in Huffman/serial_read.c).

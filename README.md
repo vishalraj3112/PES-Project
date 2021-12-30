@@ -34,3 +34,4 @@ To run the project- Clone this repository in your local drive.Import the project
 2. Cmocka unit test framework has been used to test the huffman encoding and decoding algorithm on the PC side. Two test function with multiple string inputs are used for testing. The advantage of using such a test framework is that it provides a nice GUI of the testing process. The program does not abort on a segfault or an assertion failure and continues to run until all tests are completed. The framework provides many other functionalities for testing and also some mocking functions inbuilt, which can directly be used and will save time during development.<br />
 3. 'makefile' has been used in cmocka folder to build the test program.<br />
 4. GDB debugger used for debgging the huffman encode, decode algorithm.<br />
+5. Win32 API used for reading serial port data on the PC(in serial_read.c).

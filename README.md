@@ -30,6 +30,6 @@ To run the project- Clone this repository in your local drive.Import the project
 
 # Other components:
 1. For generating the huffman tree, a python script 'huffman_enocde.py' has been used. The input to this file is given from file- 'input2.txt' which is used to generate the character codes. This input files are the linux Syslog file logs. This header file is then used for huffman encoding and decoding.
-2. Cmocka unit test framework has been used to test the huffman encoding and decoding algorithm on the PC side. Two test function with multiple string inputs are used for testing. The advantage of using such a test framework is that it provides a nice GUI of the testing process. The program does not abort on a segfault or an assertion failure and continues to run until all tests are completed. The framework provides many other functionalities for testing and also some mocking functions inbuilt, which can directly be used and will save time during development.	
-3.'makefile' has been used in cmocka folder to build the test program.
+2. Cmocka unit test framework has been used to test the huffman encoding and decoding algorithm on the PC side. Two test function with multiple string inputs are used for testing. The advantage of using such a test framework is that it provides a nice GUI of the testing process. The program does not abort on a segfault or an assertion failure and continues to run until all tests are completed. The framework provides many other functionalities for testing and also some mocking functions inbuilt, which can directly be used and will save time during development.  
+3.'makefile' has been used in cmocka folder to build the test program.  
 4.GDB debugger used for debgging the huffman encode, decode algorithm.
